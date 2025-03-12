@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 
 import connectDB from '~/config/db'
-import authRoutes from '~/routes/auth-routes'
+import userRoutes from '~/routes/user-routes'
 import categoryRoutes from '~/routes/category-routes'
 import productRoutes from '~/routes/product-routes'
 import cartRoutes from '~/routes/cart-routes'
@@ -13,8 +13,9 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express'
 
 import { AuthRequest } from '~/types/types'
-import { verifyToken } from '~/utils/jwt'
+import { verifyToken } from '~/config/jwt'
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
   const token = req.header('AccessToken')?.split(' ')[1]
@@ -12,12 +12,13 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   }
 
   const decoded = verifyToken(token)
+
   if (!decoded) {
     res.status(401).json({ message: 'Token không hợp lệ' })
     return
   }
 
-  req.user = decoded as { id: string; role: string }
+  req.user = decoded as { userId: string; role: string }
   next()
 }
 

@@ -3,36 +3,30 @@ import { Response } from 'express'
 import { AuthRequest } from '~/types/types'
 import Product from '~/models/product'
 import Cart from '~/models/cart'
+import { sendResponse } from '~/utils/response'
 
 export const getCart = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.userId
     const cart = await Cart.findOne({ user: userId }).populate('items.product')
 
-    if (!cart) {
-      res.status(200).json({ data: [] })
-      return
-    }
-
-    res.json({ data: cart })
+    sendResponse(res, 200, cart || [], 'Lấy giỏ hàng thành công')
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi server' })
+    sendResponse(res, 500, null, 'Lỗi server')
   }
 }
 
 export const addToCart = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.userId
     const { productId, quantity } = req.body
 
     const product = await Product.findById(productId)
     if (!product) {
-      res.status(404).json({ error: 'Sản phẩm không tồn tại' })
-      return
+      return sendResponse(res, 404, null, 'Sản phẩm không tồn tại')
     }
 
     let cart = await Cart.findOne({ user: userId })
-
     if (!cart) {
       cart = new Cart({ user: userId, items: [] })
     }
@@ -46,61 +40,62 @@ export const addToCart = async (req: AuthRequest, res: Response) => {
     }
 
     await cart.save()
-    res.status(200).json({ message: 'Đã thêm vào giỏ hàng', data: cart })
+    sendResponse(res, 200, cart, 'Đã thêm vào giỏ hàng')
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi server' })
+    sendResponse(res, 500, null, 'Lỗi server')
   }
 }
 
 export const updateCartItem = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.userId
     const { productId, quantity } = req.body
 
     const cart = await Cart.findOne({ user: userId })
     if (!cart) {
-      res.status(404).json({ error: 'Giỏ hàng không tồn tại' })
-      return
+      return sendResponse(res, 404, null, 'Giỏ hàng không tồn tại')
     }
+
     const item = cart.items.find((item) => item.product.toString() === productId)
     if (!item) {
-      res.status(404).json({ error: 'Sản phẩm không có trong giỏ hàng' })
-      return
+      return sendResponse(res, 404, null, 'Sản phẩm không có trong giỏ hàng')
     }
+
     item.quantity = quantity
     await cart.save()
-    res.status(200).json({ message: 'Cập nhật thành công', data: cart })
+
+    sendResponse(res, 200, cart, 'Cập nhật giỏ hàng thành công')
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi server' })
+    sendResponse(res, 500, null, 'Lỗi server')
   }
 }
 
 export const removeFromCart = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.userId
     const { productId } = req.body
 
     const cart = await Cart.findOne({ user: userId })
     if (!cart) {
-      res.status(404).json({ error: 'Giỏ hàng không tồn tại' })
-      return
+      return sendResponse(res, 404, null, 'Giỏ hàng không tồn tại')
     }
+
     cart.items.pull({ product: productId })
     await cart.save()
 
-    res.status(200).json({ message: 'Xóa sản phẩm thành công', data: cart })
+    sendResponse(res, 200, cart, 'Xóa sản phẩm khỏi giỏ hàng thành công')
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi server' })
+    sendResponse(res, 500, null, 'Lỗi server')
   }
 }
 
 export const clearCart = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user?.id
+    const userId = req.user?.userId
     await Cart.findOneAndDelete({ user: userId })
 
-    res.status(200).json({ message: 'Giỏ hàng đã được xóa' })
+    sendResponse(res, 200, null, 'Giỏ hàng đã được xóa')
   } catch (error) {
-    res.status(500).json({ error: 'Lỗi server' })
+    sendResponse(res, 500, null, 'Lỗi server')
   }
 }

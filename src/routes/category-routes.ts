@@ -6,7 +6,7 @@ import { authMiddleware, adminMiddleware } from '~/middlewares/auth-middleware'
 const router = express.Router()
 
 router.post('/', authMiddleware, adminMiddleware, createCategory)
-router.get('/', getCategories)
+router.get('/get-list', getCategories)
 router.put('/:id', authMiddleware, adminMiddleware, updateCategory)
 router.delete('/:id', authMiddleware, adminMiddleware, deleteCategory)
 

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    image: node-server
+    container_name: node-server
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - database
+    networks:
+      - node-network
+
+  database:
+    image: mongo:6.0
+    container_name: mongo-db
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - node-network
+
+volumes:
+  dbdata:
+
+networks:
+  node-network:
+    driver: bridge

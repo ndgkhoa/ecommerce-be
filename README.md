@@ -13,14 +13,14 @@
   <a href="https://github.com/expressjs/express" target="_blank"><img src="https://img.shields.io/github/stars/expressjs/express?style=social" alt="GitHub Stars" /></a>
 </p>
 
-# Description
+## Description
 
-This is a boilerplate **Express.js** application written in **TypeScript**, ready to be extended for your backend API development.
+[Express](https://github.com/expressjs/express) framework TypeScript starter repository.
 
 ## Installation
 
 ```bash
-npm install
+$ npm install
 ```
 
 ## Running the app
@@ -36,4 +36,4 @@ $ npm start
 
 ## License
 
-[MIT](LICENSE).
+Express is [MIT licensed](LICENSE).

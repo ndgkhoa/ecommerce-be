@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import httpStatus from 'http-status'
 
-import { createUserSchema, updateUserSchema } from '~/validations'
+import { CreateUserSchema, UpdateUserSchema } from '~/validations'
 import sendApiResponse from '~/utils/api-helper'
-import { ApiMessage } from '~/utils/constants'
+import { ApiMessage } from '~/types/enums/message'
 import validate from '~/utils/validate'
 import { userService } from '~/services'
 
@@ -29,7 +29,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  const userData = validate(createUserSchema, req.body)
+  const userData = validate(CreateUserSchema, req.body)
   await userService.checkUnique(userData.UserName)
   const newUser = await userService.createUser(userData, req.file)
   await newUser.save()
@@ -37,7 +37,7 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const updateUser = async (req: Request, res: Response) => {
-  const userData = validate(updateUserSchema, req.body)
+  const userData = validate(UpdateUserSchema, req.body)
   const updatedUser = await userService.updateUserById(req.params.id, userData, req.file)
   sendApiResponse(res, httpStatus.OK, updatedUser, ApiMessage.Success)
 }
@@ -49,7 +49,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
   const decoded = userService.verifyToken(req.body.RefreshToken)
-  const user = await userService.getUserById(decoded.sub)
+  const user = await userService.getUserById(decoded.sub!)
   const accessToken = userService.generateAccessToken({
     sub: user._id.toString()
   })

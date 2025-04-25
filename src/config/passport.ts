@@ -1,18 +1,18 @@
 import passport from 'passport'
 import { ExtractJwt, Strategy as JwtStrategy, VerifiedCallback } from 'passport-jwt'
+import { JwtPayload } from 'jsonwebtoken'
 
 import config from '~/config/env'
 import { userService } from '~/services'
-import { TokenPayload } from '~/utils/constants'
 
 const jwtOptions = {
   secretOrKey: config.JWT_SECRET,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }
 
-const jwtVerify = async (payload: TokenPayload, done: VerifiedCallback) => {
+const jwtVerify = async (payload: JwtPayload, done: VerifiedCallback) => {
   try {
-    const user = await userService.getUserById(payload.sub)
+    const user = await userService.getUserById(payload.sub!)
     done(null, user)
   } catch (error) {
     done(error, false)

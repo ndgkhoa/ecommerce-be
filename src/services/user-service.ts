@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
@@ -7,9 +7,8 @@ import { ApiError } from '~/utils/api-helper'
 import { CreateUserInput, UpdateUserInput } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
 import config from '~/config/env'
-import { TokenPayload } from '~/utils/constants'
 
-export const generateAccessToken = (payload: TokenPayload) => {
+export const generateAccessToken = (payload: JwtPayload) => {
   return jwt.sign(
     {
       ...payload,
@@ -30,7 +29,7 @@ export const generateRefreshToken = (userId: string) => {
 }
 
 export const verifyToken = (token: string) => {
-  return jwt.verify(token, config.JWT_SECRET) as TokenPayload
+  return jwt.verify(token, config.JWT_SECRET) as JwtPayload
 }
 
 export const checkExist = async (username: string) => {

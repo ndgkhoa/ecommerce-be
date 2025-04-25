@@ -1,6 +1,21 @@
-# E-commerce Backend
+<p align="center">
+  <a href="https://expressjs.com/" target="blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" width="200" alt="Express Logo" /></a>
+</p>
 
-A simple and clean Express.js boilerplate using TypeScript for building scalable e-commerce RESTful APIs.
+<p align="center">
+  A minimal and flexible <a href="http://nodejs.org" target="_blank">Node.js</a> web application framework for building efficient and scalable server-side applications.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/express" target="_blank"><img src="https://img.shields.io/npm/v/express.svg" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/package/express" target="_blank"><img src="https://img.shields.io/npm/l/express.svg" alt="Package License" /></a>
+  <a href="https://www.npmjs.com/package/express" target="_blank"><img src="https://img.shields.io/npm/dm/express.svg" alt="NPM Downloads" /></a>
+  <a href="https://github.com/expressjs/express" target="_blank"><img src="https://img.shields.io/github/stars/expressjs/express?style=social" alt="GitHub Stars" /></a>
+</p>
+
+# Description
+
+This is a boilerplate **Express.js** application written in **TypeScript**, ready to be extended for your backend API development.
 
 ## Installation
 
@@ -8,24 +23,17 @@ A simple and clean Express.js boilerplate using TypeScript for building scalable
 npm install
 ```
 
-## Development
+## Running the app
 
 ```bash
-npm run dev
+# Start in development mode
+$ npm run dev
+
+# Build and run in production
+$ npm run build
+$ npm start
 ```
 
-Runs the server with `nodemon`. Default URL: [http://localhost:3000](http://localhost:3000)
+## License
 
-## Build
-
-```bash
-npm run build
-```
-
-Build files are output to the `dist/` directory.
-
-## Start in Production
-
-```bash
-npm start
-```
+[MIT](LICENSE).

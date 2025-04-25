@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import mongooseHidden from 'mongoose-hidden'
 
-const userSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     UserName: { type: String, required: true, unique: true },
     Password: { type: String, required: true, select: false },
@@ -13,9 +13,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-userSchema.plugin(mongooseHidden(), {
+UserSchema.plugin(mongooseHidden(), {
   hidden: { __v: true, createdAt: true, updatedAt: true },
   defaultHidden: { _id: false }
 })
 
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model('User', UserSchema)

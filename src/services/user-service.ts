@@ -3,26 +3,33 @@ import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
 import { User } from '~/models'
-import { ApiError } from '~/utils/api-helper'
+import { ApiError } from '~/types'
 import { CreateUserInput, UpdateUserInput } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
 import config from '~/config/env'
 
 export const generateAccessToken = (payload: JwtPayload) => {
+  const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       ...payload,
-      exp: Math.floor(Date.now() / 1000) + config.JWT_ACCESS_EXP
+      iss: config.JWT_ISSUER,
+      aud: config.JWT_AUDIENCE,
+      iat: now,
+      exp: now + config.JWT_ACCESS_EXP
     },
     config.JWT_SECRET
   )
 }
 
 export const generateRefreshToken = (userId: string) => {
+  const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       sub: userId,
-      exp: Math.floor(Date.now() / 1000) + config.JWT_REFRESH_EXP
+      iat: now,
+      exp: now + config.JWT_REFRESH_EXP,
+      refresh: true
     },
     config.JWT_SECRET
   )

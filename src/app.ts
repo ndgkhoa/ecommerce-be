@@ -9,7 +9,7 @@ import passport from '~/config/passport'
 import routes from '~/routes'
 import limiter from '~/middlewares/rate-limiter'
 import { errorConverter, errorHandler } from '~/middlewares/error'
-import { ApiError } from '~/utils/api-helper'
+import { ApiError } from '~/types'
 
 const app = express()
 

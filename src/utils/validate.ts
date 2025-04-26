@@ -1,7 +1,7 @@
 import httpStatus from 'http-status'
 import { ZodSchema } from 'zod'
 
-import { ApiError } from '~/utils/api-helper'
+import { ApiError } from '~/types'
 
 const validate = <T>(schema: ZodSchema<T>, data: unknown) => {
   const result = schema.safeParse(data)

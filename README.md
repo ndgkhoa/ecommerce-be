@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A minimal and flexible <a href="http://nodejs.org" target="_blank">Node.js</a> web application framework for building efficient and scalable server-side applications.
+  A minimal and flexible <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
 
 ## Description
 
-[Express](https://github.com/expressjs/express) framework TypeScript starter repository.
+[Express](https://github.com/expressjs/express) framework TypeScript starter project.
 
 ## Installation
 
@@ -36,4 +36,4 @@ $ npm start
 
 ## License
 
-Express is [MIT licensed](LICENSE).
+Distributed under the [MIT Licensed](LICENSE).

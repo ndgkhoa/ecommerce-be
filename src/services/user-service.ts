@@ -1,48 +1,53 @@
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
 import { User } from '~/models'
-import { ApiError } from '~/types'
+import { ApiError, TokenType } from '~/types'
 import { CreateUserInput, UpdateUserInput } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
 import config from '~/config/env'
+import { privateKey } from '~/config/keys'
 
-export const generateAccessToken = (payload: JwtPayload) => {
+export const signAccessToken = (payload: TokenType) => {
   const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       ...payload,
+      jti: crypto.randomUUID(),
       iss: config.JWT_ISSUER,
       aud: config.JWT_AUDIENCE,
       iat: now,
       exp: now + config.JWT_ACCESS_EXP
     },
-    config.JWT_SECRET
+    privateKey,
+    { algorithm: 'RS256' }
   )
 }
 
-export const generateRefreshToken = (userId: string) => {
+export const signRefreshToken = (userId: string) => {
   const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       sub: userId,
+      jti: crypto.randomUUID(),
       iat: now,
       exp: now + config.JWT_REFRESH_EXP,
       refresh: true
     },
-    config.JWT_SECRET
+    config.JWT_REFRESH_SECRET,
+    { algorithm: 'HS512' }
   )
 }
 
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, config.JWT_SECRET) as JwtPayload
+export const verifyRefreshToken = (token: string) => {
+  return jwt.verify(token, config.JWT_REFRESH_SECRET, { algorithms: ['HS512'] }) as TokenType
 }
 
 export const checkExist = async (username: string) => {
   const user = await User.findOne({ UserName: username }).select('+Password')
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
   }
   return user
 }
@@ -50,14 +55,14 @@ export const checkExist = async (username: string) => {
 export const checkUnique = async (username: string) => {
   const user = await User.findOne({ UserName: username })
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, 'Username đã tồn tại')
+    throw new ApiError(httpStatus.CONFLICT, 'Username đã tồn tại.')
   }
 }
 
 export const checkPassword = async (password: string, hashedPassword: string) => {
   const isMatch = await bcrypt.compare(password, hashedPassword)
   if (!isMatch) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Sai mật khẩu')
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Sai mật khẩu.')
   }
 }
 
@@ -81,7 +86,7 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
   }
   return user
 }
@@ -98,6 +103,6 @@ export const updateUserById = async (id: string, userData: UpdateUserInput, avat
 export const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại')
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
   }
 }

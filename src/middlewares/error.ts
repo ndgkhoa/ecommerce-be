@@ -5,8 +5,6 @@ import sendResponse from '~/utils/send-response'
 
 export const errorConverter = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (!(err instanceof ApiError)) {
-    console.log('err', err)
-
     err = new ApiError(500, 'Internal Server Error')
   }
   next(err)

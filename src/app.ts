@@ -9,7 +9,6 @@ import passport from '~/config/passport'
 import routes from '~/routes'
 import limiter from '~/middlewares/rate-limiter'
 import { errorConverter, errorHandler } from '~/middlewares/error'
-import { ApiError } from '~/types'
 
 const app = express()
 
@@ -23,9 +22,7 @@ app.options('*', cors())
 app.use(passport.initialize())
 app.use('/api/user', limiter)
 app.use('/', routes)
-app.use((req, res, next) => {
-  next(new ApiError(404, 'Endpoint not available'))
-})
+
 app.use(errorConverter)
 app.use(errorHandler)
 

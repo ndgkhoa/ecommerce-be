@@ -6,7 +6,7 @@ import logger from '~/utils/logger'
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().transform(Number).default('3001'),
-  JWT_SECRET: z.string(),
+  JWT_REFRESH_SECRET: z.string().min(32),
   JWT_ISSUER: z.string().default('https://localhost:3001/'),
   JWT_AUDIENCE: z.enum(['web-app', 'mobile-app']).default('web-app'),
   JWT_ACCESS_EXP: z.number().default(7 * 24 * 60 * 60),

@@ -3,19 +3,17 @@ import httpStatus from 'http-status'
 
 import { CreateUserSchema, UpdateUserSchema } from '~/validations'
 import sendResponse from '~/utils/send-response'
-import { ApiMessage } from '~/types'
 import validate from '~/utils/validate'
+import { ApiMessage, TokenType } from '~/types'
 import { userService } from '~/services'
 
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkExist(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
-  const accessToken = userService.generateAccessToken({
-    sub: user._id.toString(),
-    roles: ['user', 'content_editor'],
-    perms: ['posts:read', 'posts:write']
+  const accessToken = userService.signAccessToken({
+    sub: user._id.toString()
   })
-  const refreshToken = userService.generateRefreshToken(user._id.toString())
+  const refreshToken = userService.signRefreshToken(user._id.toString())
   const response = { UserId: user._id, AccessToken: accessToken, RefreshToken: refreshToken }
   sendResponse(res, httpStatus.OK, response, ApiMessage.Success)
 }
@@ -50,17 +48,19 @@ export const deleteUser = async (req: Request, res: Response) => {
 }
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  const decoded = userService.verifyToken(req.body.RefreshToken)
-  const user = await userService.getUserById(decoded.sub!)
-  const accessToken = userService.generateAccessToken({
+  const decoded = userService.verifyRefreshToken(req.body.RefreshToken)
+  const user = await userService.getUserById(decoded.sub)
+  const accessToken = userService.signAccessToken({
     sub: user._id.toString()
   })
   sendResponse(res, httpStatus.OK, { AccessToken: accessToken }, ApiMessage.Success)
 }
 
 export const getInfoMine = async (req: Request, res: Response) => {
+  const token = req.user as TokenType
+  const user = await userService.getUserById(token.sub)
   res.send({
-    User: req.user,
+    User: user,
     Permissions: [
       {
         ActivityId: '1',

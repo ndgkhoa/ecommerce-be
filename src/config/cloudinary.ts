@@ -20,7 +20,7 @@ export const uploadImage = async (file: Express.Multer.File) => {
         },
         (error, result) => {
           if (error || !result) {
-            return reject(error || new Error('Upload failed'))
+            return reject(error || new Error('Upload failed.'))
           }
           resolve({
             uid: result.public_id,

@@ -12,5 +12,5 @@ export const UpdateUserSchema = CreateUserSchema.extend({
   Avatar: z.string().optional()
 }).partial()
 
-export type CreateUserInput = z.infer<typeof CreateUserSchema>
-export type UpdateUserInput = z.infer<typeof UpdateUserSchema>
+export type CreateUserData = z.infer<typeof CreateUserSchema>
+export type UpdateUserData = z.infer<typeof UpdateUserSchema>

@@ -9,7 +9,7 @@ yarn.lock
 /build
 /out
 /prisma/generated
-/src/keys/*
+/src/keys
 
 # Logs
 logs

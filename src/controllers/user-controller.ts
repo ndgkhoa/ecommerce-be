@@ -1,18 +1,15 @@
 import { Request, Response } from 'express'
 import httpStatus from 'http-status'
 
-import { CreateUserSchema, UpdateUserSchema } from '~/validations'
-import sendResponse from '~/utils/send-response'
-import validate from '~/utils/validate'
-import { ApiMessage, TokenType } from '~/types'
+import sendResponse from '~/utils/response'
+import { ApiMessage, JwtPayload } from '~/types'
 import { userService } from '~/services'
 
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkExist(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
-  const accessToken = userService.signAccessToken({
-    sub: user._id.toString()
-  })
+  const payload = { sub: user._id.toString() }
+  const accessToken = userService.signAccessToken(payload)
   const refreshToken = userService.signRefreshToken(user._id.toString())
   const response = { UserId: user._id, AccessToken: accessToken, RefreshToken: refreshToken }
   sendResponse(res, httpStatus.OK, response, ApiMessage.Success)
@@ -29,16 +26,14 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  const userData = validate(CreateUserSchema, req.body)
-  await userService.checkUnique(userData.UserName)
-  const newUser = await userService.createUser(userData, req.file)
+  await userService.checkUnique(req.body.UserName)
+  const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
   sendResponse(res, httpStatus.CREATED, newUser, ApiMessage.Success)
 }
 
 export const updateUser = async (req: Request, res: Response) => {
-  const userData = validate(UpdateUserSchema, req.body)
-  const updatedUser = await userService.updateUserById(req.params.id, userData, req.file)
+  const updatedUser = await userService.updateUserById(req.params.id, req.body, req.file)
   sendResponse(res, httpStatus.OK, updatedUser, ApiMessage.Success)
 }
 
@@ -48,16 +43,15 @@ export const deleteUser = async (req: Request, res: Response) => {
 }
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  const decoded = userService.verifyRefreshToken(req.body.RefreshToken)
-  const user = await userService.getUserById(decoded.sub)
-  const accessToken = userService.signAccessToken({
-    sub: user._id.toString()
-  })
-  sendResponse(res, httpStatus.OK, { AccessToken: accessToken }, ApiMessage.Success)
+  const token = userService.verifyRefreshToken(req.body.RefreshToken)
+  const user = await userService.getUserById(token.sub)
+  const payload = { sub: user._id.toString() }
+  const newAccessToken = userService.signAccessToken(payload)
+  sendResponse(res, httpStatus.OK, { AccessToken: newAccessToken }, ApiMessage.Success)
 }
 
 export const getInfoMine = async (req: Request, res: Response) => {
-  const token = req.user as TokenType
+  const token = req.user as JwtPayload
   const user = await userService.getUserById(token.sub)
   res.send({
     User: user,

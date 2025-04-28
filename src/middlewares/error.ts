@@ -1,11 +1,18 @@
 import { Request, Response, NextFunction } from 'express'
+import mongoose from 'mongoose'
 
 import { ApiError } from '~/types'
-import sendResponse from '~/utils/send-response'
+import sendResponse from '~/utils/response'
 
 export const errorConverter = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  let status = 500
+  let message = 'Internal server error.'
   if (!(err instanceof ApiError)) {
-    err = new ApiError(500, 'Internal Server Error')
+    if (err instanceof mongoose.Error) {
+      status = 400
+      message = err.message
+    }
+    err = new ApiError(status, message)
   }
   next(err)
 }

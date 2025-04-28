@@ -3,13 +3,13 @@ import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
 import { User } from '~/models'
-import { ApiError, TokenType } from '~/types'
-import { CreateUserInput, UpdateUserInput } from '~/validations'
+import { ApiError, JwtPayload } from '~/types'
+import { CreateUserData, UpdateUserData } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
 import config from '~/config/env'
 import { privateKey } from '~/config/keys'
 
-export const signAccessToken = (payload: TokenType) => {
+export const signAccessToken = (payload: JwtPayload) => {
   const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
@@ -41,7 +41,11 @@ export const signRefreshToken = (userId: string) => {
 }
 
 export const verifyRefreshToken = (token: string) => {
-  return jwt.verify(token, config.JWT_REFRESH_SECRET, { algorithms: ['HS512'] }) as TokenType
+  try {
+    return jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload
+  } catch {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token.')
+  }
 }
 
 export const checkExist = async (username: string) => {
@@ -66,14 +70,14 @@ export const checkPassword = async (password: string, hashedPassword: string) =>
   }
 }
 
-export const createUser = async (userData: CreateUserInput, avatarFile?: Express.Multer.File) => {
-  const hashedPassword = await bcrypt.hash(userData.Password, 10)
+export const createUser = async (body: CreateUserData, avatarFile?: Express.Multer.File) => {
+  const hashedPassword = await bcrypt.hash(body.Password, 10)
   let avatar = null
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
   return new User({
-    ...userData,
+    ...body,
     Password: hashedPassword,
     Avatar: avatar
   })
@@ -91,13 +95,13 @@ export const getUserById = async (id: string) => {
   return user
 }
 
-export const updateUserById = async (id: string, userData: UpdateUserInput, avatarFile?: Express.Multer.File) => {
+export const updateUserById = async (id: string, body: UpdateUserData, avatarFile?: Express.Multer.File) => {
   const user = await getUserById(id)
   let avatar = user.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
-  return await User.findByIdAndUpdate(id, { ...userData, Avatar: avatar }, { new: true })
+  return await User.findByIdAndUpdate(id, { ...body, Avatar: avatar }, { new: true })
 }
 
 export const deleteUserById = async (id: string) => {

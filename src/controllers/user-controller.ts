@@ -8,10 +8,10 @@ import { userService } from '~/services'
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkExist(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
-  const payload = { sub: user._id.toString() }
+  const payload = { sub: user.id }
   const accessToken = userService.signAccessToken(payload)
-  const refreshToken = userService.signRefreshToken(user._id.toString())
-  const response = { UserId: user._id, AccessToken: accessToken, RefreshToken: refreshToken }
+  const refreshToken = userService.signRefreshToken(user.id)
+  const response = { UserId: user.id, AccessToken: accessToken, RefreshToken: refreshToken }
   sendResponse(res, httpStatus.OK, response, ApiMessage.Success)
 }
 
@@ -45,7 +45,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const refreshAccessToken = async (req: Request, res: Response) => {
   const token = userService.verifyRefreshToken(req.body.RefreshToken)
   const user = await userService.getUserById(token.sub)
-  const payload = { sub: user._id.toString() }
+  const payload = { sub: user.id }
   const newAccessToken = userService.signAccessToken(payload)
   sendResponse(res, httpStatus.OK, { AccessToken: newAccessToken }, ApiMessage.Success)
 }

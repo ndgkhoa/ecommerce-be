@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
-import mongooseHidden from 'mongoose-hidden'
+
+import toJSON from '~/utils/toJSON'
 
 const UserSchema = new mongoose.Schema(
   {
     UserName: { type: String, required: true, unique: true },
-    Password: { type: String, required: true, select: false },
+    Password: { type: String, required: true },
     Email: { type: String, required: true },
     PhoneNumber: { type: String, required: true },
     FullName: { type: String, required: true },
@@ -13,9 +14,6 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-UserSchema.plugin(mongooseHidden(), {
-  hidden: { __v: true, createdAt: true, updatedAt: true },
-  defaultHidden: { _id: false }
-})
+UserSchema.plugin(toJSON, { hiddenFields: ['Password'] })
 
 export const User = mongoose.model('User', UserSchema)

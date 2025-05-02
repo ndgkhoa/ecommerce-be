@@ -7,7 +7,7 @@ import 'express-async-errors'
 
 import passport from '~/config/passport'
 import routes from '~/routes'
-import limiter from '~/middlewares/rate-limiter'
+import { limiter } from '~/middlewares/rate-limiter'
 import { errorConverter, errorHandler } from '~/middlewares/error'
 
 const app = express()

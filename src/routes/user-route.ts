@@ -3,7 +3,7 @@ import express from 'express'
 import upload from '~/config/multer'
 import { userController } from '~/controllers'
 import { authenticate } from '~/middlewares/auth'
-import validate from '~/middlewares/validate'
+import { validate } from '~/middlewares/validate'
 import { CreateUserSchema, UpdateUserSchema } from '~/validations'
 
 const router = express.Router()

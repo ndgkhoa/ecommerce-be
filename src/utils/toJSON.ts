@@ -4,12 +4,15 @@ interface ToJSONOptions {
   hiddenFields?: string[]
 }
 
-function toJSON(schema: Schema, options: ToJSONOptions = {}) {
+const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
   schema.set('toJSON', {
     virtuals: false,
     versionKey: false,
-    transform: function (doc, ret) {
-      const { _id, __v, createdAt, updatedAt, ...rest } = ret
+    transform: (doc, ret) => {
+      const { _id, ...rest } = ret
+      delete rest.createdAt
+      delete rest.updatedAt
+      delete rest.__v
       if (options.hiddenFields && Array.isArray(options.hiddenFields)) {
         for (const field of options.hiddenFields) {
           delete rest[field]

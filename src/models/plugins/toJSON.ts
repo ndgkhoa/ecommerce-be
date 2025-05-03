@@ -4,7 +4,7 @@ interface ToJSONOptions {
   hiddenFields?: string[]
 }
 
-const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
+export const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
   schema.set('toJSON', {
     virtuals: false,
     versionKey: false,
@@ -25,5 +25,3 @@ const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
     }
   })
 }
-
-export default toJSON

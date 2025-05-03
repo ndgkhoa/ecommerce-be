@@ -19,6 +19,12 @@ export enum ApiMessage {
   Fail = 'Failed.'
 }
 
+export enum ErrorName {
+  Mongoose = 'MongooseError',
+  Zod = 'ZodError',
+  Jwt = 'JsonWebTokenError'
+}
+
 export interface ApiResponse<T> {
   StatusCode: number
   Message: string

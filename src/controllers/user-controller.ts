@@ -2,8 +2,10 @@ import { Request, Response } from 'express'
 import httpStatus from 'http-status'
 
 import sendResponse from '~/utils/response'
+import pick from '~/utils/pick'
 import { ApiMessage, JwtPayload } from '~/types'
 import { userService } from '~/services'
+import { User } from '~/models'
 
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkExist(req.body.UserName)
@@ -16,9 +18,24 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const getUserList = async (req: Request, res: Response) => {
-  const list = await userService.getUserList()
-  sendResponse(res, httpStatus.OK, list, ApiMessage.Success)
+  const filter = pick(req.query, ['name', 'role'])
+  const options = pick(req.query, ['sortBy', 'limit', 'page'])
+  const result = await User.paginate(filter, {
+    ...options,
+    limit: Number(options.limit),
+    page: Number(options.page),
+    sort: options.sortBy || '-createdAt'
+  })
+
+  res.send(result)
+  // const list = await userService.getUserList()
+  // sendResponse(res, httpStatus.OK, list, ApiMessage.Success)
 }
+
+// export const getUserList = async (req: Request, res: Response) => {
+//   const list = await userService.getUserList()
+//   sendResponse(res, httpStatus.OK, list, ApiMessage.Success)
+// }
 
 export const getUserById = async (req: Request, res: Response) => {
   const user = await userService.getUserById(req.params.id)

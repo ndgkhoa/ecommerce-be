@@ -1,12 +1,12 @@
-import jwt from 'jsonwebtoken'
+import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
+import config from '~/config/env'
 import { User } from '~/models'
 import { ApiError, JwtPayload } from '~/types'
 import { CreateUserData, UpdateUserData } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
-import config from '~/config/env'
 import { privateKey } from '~/config/keys'
 
 export const signAccessToken = (payload: JwtPayload) => {
@@ -44,7 +44,7 @@ export const verifyRefreshToken = (token: string) => {
   try {
     return jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload
   } catch {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token.')
+    throw new JsonWebTokenError('Invalid token.')
   }
 }
 

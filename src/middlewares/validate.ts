@@ -1,12 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
-import { ZodSchema } from 'zod'
+import { AnyZodObject, ZodError, ZodSchema } from 'zod'
 
-import { ApiError } from '~/types'
-
-export const validate = <T>(schema: ZodSchema<T>) => {
+export const validate = (schema: AnyZodObject) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body)
-    if (!result.success) throw new ApiError(400, result.error.errors[0].message)
+    const result = schema.safeParse({ body: req.body, query: req.query, params: req.params })
+    if (!result.success) throw new ZodError(result.error.issues)
     next()
   }
 }

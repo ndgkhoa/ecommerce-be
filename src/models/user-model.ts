@@ -1,17 +1,6 @@
 import mongoose from 'mongoose'
 
-import { toJSON, paginate } from '~/models/plugins'
-
-export interface IUser extends Document {
-  UserName: string
-  Password: string
-  Email: string
-  PhoneNumber: string
-  FullName: string
-  Avatar: any
-}
-
-interface InstitutionDocument extends mongoose.Document, IUser {}
+import { toJSON } from '~/models/plugins'
 
 const UserSchema = new mongoose.Schema(
   {
@@ -26,6 +15,5 @@ const UserSchema = new mongoose.Schema(
 )
 
 UserSchema.plugin(toJSON, { hiddenFields: ['Password'] })
-UserSchema.plugin(paginate)
 
-export const User = mongoose.model<IUser, mongoose.PaginateModel<InstitutionDocument>>('User', UserSchema)
+export const User = mongoose.model('User', UserSchema)

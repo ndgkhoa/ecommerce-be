@@ -15,14 +15,10 @@ export interface TokenType {
 export type JwtPayload = Pick<TokenType, 'sub'>
 
 export enum ApiMessage {
-  Success = 'Successful.',
-  Fail = 'Failed.'
-}
-
-export enum ErrorName {
-  Mongoose = 'MongooseError',
-  Zod = 'ZodError',
-  Jwt = 'JsonWebTokenError'
+  Success = 'Successful',
+  UserNameExist = 'Username đã tồn tại',
+  UserNotFound = 'Người dùng không tồn tại',
+  PasswordIncorrect = 'Mật khẩu không chính xác'
 }
 
 export interface ApiResponse<T> {

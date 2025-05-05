@@ -1,10 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
-import { AnyZodObject, ZodError, ZodSchema } from 'zod'
+import { AnyZodObject } from 'zod'
 
-export const validate = (schema: AnyZodObject) => {
+type ValidateSchema = Partial<Record<'body' | 'query' | 'params', AnyZodObject>>
+
+export const validate = (schema: ValidateSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse({ body: req.body, query: req.query, params: req.params })
-    if (!result.success) throw new ZodError(result.error.issues)
+    Object.entries(schema).forEach(([key, validator]) => {
+      if (validator) {
+        validator.parse(req[key as keyof typeof req])
+      }
+    })
     next()
   }
 }

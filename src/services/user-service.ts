@@ -3,11 +3,11 @@ import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
 import config from '~/config/env'
-import { User } from '~/models'
-import { ApiError, JwtPayload } from '~/types'
-import { CreateUserData, UpdateUserData } from '~/validations'
 import { uploadImage } from '~/config/cloudinary'
 import { privateKey } from '~/config/keys'
+import { User } from '~/models'
+import { ApiError, ApiMessage, JwtPayload } from '~/types'
+import { CreateUserData, UpdateUserData } from '~/validations'
 
 export const signAccessToken = (payload: JwtPayload) => {
   const now = Math.floor(Date.now() / 1000)
@@ -44,14 +44,14 @@ export const verifyRefreshToken = (token: string) => {
   try {
     return jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload
   } catch {
-    throw new JsonWebTokenError('Invalid token.')
+    throw new JsonWebTokenError('Invalid token')
   }
 }
 
 export const checkExist = async (username: string) => {
   const user = await User.findOne({ UserName: username }).select('+Password')
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
   }
   return user
 }
@@ -59,14 +59,14 @@ export const checkExist = async (username: string) => {
 export const checkUnique = async (username: string) => {
   const user = await User.findOne({ UserName: username })
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, 'Username đã tồn tại.')
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.UserNameExist)
   }
 }
 
 export const checkPassword = async (password: string, hashedPassword: string) => {
   const isMatch = await bcrypt.compare(password, hashedPassword)
   if (!isMatch) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Sai mật khẩu.')
+    throw new ApiError(httpStatus.UNAUTHORIZED, ApiMessage.PasswordIncorrect)
   }
 }
 
@@ -83,6 +83,10 @@ export const createUser = async (body: CreateUserData, avatarFile?: Express.Mult
   })
 }
 
+// export const queryUser = async (filter: any, optioWns: any) => {
+//   return await User.paginate(filter, options)
+// }
+
 export const getUserList = async () => {
   return await User.find()
 }
@@ -90,13 +94,14 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
   }
   return user
 }
 
 export const updateUserById = async (id: string, body: UpdateUserData, avatarFile?: Express.Multer.File) => {
   const user = await getUserById(id)
+  if (user.UserName !== body.UserName) await checkUnique(body.UserName)
   let avatar = user.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
@@ -107,6 +112,6 @@ export const updateUserById = async (id: string, body: UpdateUserData, avatarFil
 export const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.')
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
   }
 }

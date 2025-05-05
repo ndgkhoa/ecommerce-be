@@ -1,52 +1,10 @@
-import jwt, { JsonWebTokenError } from 'jsonwebtoken'
-import httpStatus from 'http-status'
 import bcrypt from 'bcryptjs'
 
-import config from '~/config/env'
-import { uploadImage } from '~/config/cloudinary'
-import { privateKey } from '~/config/keys'
 import { User } from '~/models'
-import { ApiError, ApiMessage, JwtPayload } from '~/types'
+import { ApiError } from '~/types'
 import { CreateUserData, UpdateUserData } from '~/validations'
-
-export const signAccessToken = (payload: JwtPayload) => {
-  const now = Math.floor(Date.now() / 1000)
-  return jwt.sign(
-    {
-      ...payload,
-      jti: crypto.randomUUID(),
-      iss: config.JWT_ISSUER,
-      aud: config.JWT_AUDIENCE,
-      iat: now,
-      exp: now + config.JWT_ACCESS_EXP
-    },
-    privateKey,
-    { algorithm: 'RS256' }
-  )
-}
-
-export const signRefreshToken = (userId: string) => {
-  const now = Math.floor(Date.now() / 1000)
-  return jwt.sign(
-    {
-      sub: userId,
-      jti: crypto.randomUUID(),
-      iat: now,
-      exp: now + config.JWT_REFRESH_EXP,
-      refresh: true
-    },
-    config.JWT_REFRESH_SECRET,
-    { algorithm: 'HS512' }
-  )
-}
-
-export const verifyRefreshToken = (token: string) => {
-  try {
-    return jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload
-  } catch {
-    throw new JsonWebTokenError('Invalid token')
-  }
-}
+import { ApiMessage, httpStatus } from '~/constants'
+import { uploadImage } from '~/utils/file'
 
 export const checkExist = async (username: string) => {
   const user = await User.findOne({ UserName: username }).select('+Password')
@@ -83,7 +41,7 @@ export const createUser = async (body: CreateUserData, avatarFile?: Express.Mult
   })
 }
 
-// export const queryUser = async (filter: any, optioWns: any) => {
+// export const queryUser = async (filter: any, options: any) => {
 //   return await User.paginate(filter, options)
 // }
 

@@ -1,5 +1,5 @@
 import app from '~/app'
-import logger from '~/utils/logger'
+import logger from '~/config/logger'
 import connectDB from '~/config/database'
 import config from '~/config/env'
 

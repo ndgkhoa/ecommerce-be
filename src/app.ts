@@ -5,8 +5,8 @@ import compression from 'compression'
 import cors from 'cors'
 import 'express-async-errors'
 
-import passport from '~/config/passport'
 import routes from '~/routes'
+import passport from '~/config/passport'
 import { limiter } from '~/middlewares/rate-limiter'
 import { errorConverter, errorHandler } from '~/middlewares/error'
 

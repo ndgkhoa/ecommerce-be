@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { objectId, password } from '~/validations/custom-validation'
 
-export const CreateUserSchema = {
+export const createUserSchema = {
   body: z.object({
     UserName: z.string().min(3, 'Tên đăng nhập phải có ít nhất 3 ký tự'),
     Password: password,
@@ -12,12 +12,12 @@ export const CreateUserSchema = {
   })
 }
 
-export const UpdateUserSchema = {
+export const updateUserSchema = {
   params: z.object({
     id: objectId
   }),
-  body: CreateUserSchema.body.omit({ Password: true })
+  body: createUserSchema.body
 }
 
-export type CreateUserData = z.infer<typeof CreateUserSchema.body>
-export type UpdateUserData = z.infer<typeof UpdateUserSchema.body>
+export type CreateUserData = z.infer<typeof createUserSchema.body>
+export type UpdateUserData = z.infer<typeof updateUserSchema.body>

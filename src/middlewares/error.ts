@@ -3,7 +3,7 @@ import { ZodError } from 'zod'
 import { JsonWebTokenError } from 'jsonwebtoken'
 
 import { ApiError } from '~/types'
-import sendResponse from '~/utils/response'
+import { sendResponse } from '~/utils/helpers'
 
 export const errorConverter = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (!(err instanceof ApiError)) {

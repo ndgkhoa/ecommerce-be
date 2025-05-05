@@ -1,16 +1,17 @@
 import { Request, Response } from 'express'
-import httpStatus from 'http-status'
 
-import sendResponse from '~/utils/response'
-import { ApiMessage, JwtPayload } from '~/types'
+import { JwtPayload } from '~/types'
 import { userService } from '~/services'
+import { sendResponse } from '~/utils/helpers'
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/jwt'
+import { ApiMessage, httpStatus } from '~/constants'
 
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkExist(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
   const payload = { sub: user.id }
-  const accessToken = userService.signAccessToken(payload)
-  const refreshToken = userService.signRefreshToken(user.id)
+  const accessToken = signAccessToken(payload)
+  const refreshToken = signRefreshToken(user.id)
   const response = { UserId: user.id, AccessToken: accessToken, RefreshToken: refreshToken }
   sendResponse(res, httpStatus.OK, response, ApiMessage.Success)
 }
@@ -43,10 +44,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 }
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  const token = userService.verifyRefreshToken(req.body.RefreshToken)
+  const token = verifyRefreshToken(req.body.RefreshToken)
   const user = await userService.getUserById(token.sub)
   const payload = { sub: user.id }
-  const newAccessToken = userService.signAccessToken(payload)
+  const newAccessToken = signAccessToken(payload)
   sendResponse(res, httpStatus.OK, { AccessToken: newAccessToken }, ApiMessage.Success)
 }
 

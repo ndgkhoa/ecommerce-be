@@ -14,14 +14,7 @@ export interface TokenType {
 
 export type JwtPayload = Pick<TokenType, 'sub'>
 
-export enum ApiMessage {
-  Success = 'Successful',
-  UserNameExist = 'Username đã tồn tại',
-  UserNotFound = 'Người dùng không tồn tại',
-  PasswordIncorrect = 'Mật khẩu không chính xác'
-}
-
-export interface ApiResponse<T> {
+export type ApiResponse<T> = {
   StatusCode: number
   Message: string
   TotalRecord: number

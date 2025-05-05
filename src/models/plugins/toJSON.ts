@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose'
 
-interface ToJSONOptions {
+type ToJSONOptions = {
   hiddenFields?: string[]
 }
 

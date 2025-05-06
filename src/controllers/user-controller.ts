@@ -7,7 +7,7 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/j
 import { ApiMessage, httpStatus } from '~/constants'
 
 export const login = async (req: Request, res: Response) => {
-  const user = await userService.checkExist(req.body.UserName)
+  const user = await userService.checkUserExist(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
   const payload = { sub: user.id }
   const accessToken = signAccessToken(payload)
@@ -17,8 +17,8 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const getUserList = async (req: Request, res: Response) => {
-  const list = await userService.getUserList()
-  sendResponse(res, httpStatus.OK, list, ApiMessage.Success)
+  const users = await userService.getUserList()
+  sendResponse(res, httpStatus.OK, users, ApiMessage.Success)
 }
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -27,7 +27,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  await userService.checkUnique(req.body.UserName)
+  await userService.checkUserUnique(req.body.UserName)
   const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
   sendResponse(res, httpStatus.CREATED, newUser, ApiMessage.Success)

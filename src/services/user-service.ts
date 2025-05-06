@@ -2,22 +2,22 @@ import bcrypt from 'bcryptjs'
 
 import { User } from '~/models'
 import { ApiError } from '~/types'
-import { CreateUserData, UpdateUserData } from '~/validations'
+import { CreateUserBody, UpdateUserBody } from '~/validations'
 import { ApiMessage, httpStatus } from '~/constants'
 import { uploadImage } from '~/utils/file'
 
-export const checkExist = async (username: string) => {
-  const user = await User.findOne({ UserName: username }).select('+Password')
+export const checkUserExist = async (userName: string) => {
+  const user = await User.findOne({ UserName: userName }).select('+Password')
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
   }
   return user
 }
 
-export const checkUnique = async (username: string) => {
-  const user = await User.findOne({ UserName: username })
+export const checkUserUnique = async (userName: string) => {
+  const user = await User.findOne({ UserName: userName })
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.UserNameExist)
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
   }
 }
 
@@ -28,7 +28,7 @@ export const checkPassword = async (password: string, hashedPassword: string) =>
   }
 }
 
-export const createUser = async (body: CreateUserData, avatarFile?: Express.Multer.File) => {
+export const createUser = async (body: CreateUserBody, avatarFile?: Express.Multer.File) => {
   const hashedPassword = await bcrypt.hash(body.Password, 10)
   let avatar = null
   if (avatarFile) {
@@ -52,14 +52,14 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
   }
   return user
 }
 
-export const updateUserById = async (id: string, body: UpdateUserData, avatarFile?: Express.Multer.File) => {
+export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
   const user = await getUserById(id)
-  if (user.UserName !== body.UserName) await checkUnique(body.UserName)
+  if (user.UserName !== body.UserName) await checkUserUnique(body.UserName)
   let avatar = user.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
@@ -70,6 +70,6 @@ export const updateUserById = async (id: string, body: UpdateUserData, avatarFil
 export const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.UserNotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
   }
 }

@@ -19,5 +19,5 @@ export const updateUserSchema = {
   body: createUserSchema.body
 }
 
-export type CreateUserData = z.infer<typeof createUserSchema.body>
-export type UpdateUserData = z.infer<typeof updateUserSchema.body>
+export type CreateUserBody = z.infer<typeof createUserSchema.body>
+export type UpdateUserBody = z.infer<typeof updateUserSchema.body>

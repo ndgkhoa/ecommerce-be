@@ -1,6 +1,6 @@
 export enum ApiMessage {
   Success = 'Successful',
-  UserNameExist = 'Username đã tồn tại',
-  UserNotFound = 'Người dùng không tồn tại',
+  AlreadyExist = 'Đã tồn tại',
+  NotFound = 'Không tìm thấy',
   PasswordIncorrect = 'Mật khẩu không chính xác'
 }

@@ -1,2 +1,2 @@
 export * from '~/models/user-model'
-export * from '~/models/sys-role-model'
+export * from '~/models/role-model'

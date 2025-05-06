@@ -1,7 +1,12 @@
 import 'dotenv/config'
+import fs from 'fs'
+import path from 'path'
 import { z } from 'zod'
 
 import logger from '~/config/logger'
+
+const privateKey = fs.readFileSync(path.join(__dirname, '../keys/private.key'), 'utf8')
+const publicKey = fs.readFileSync(path.join(__dirname, '../keys/public.key'), 'utf8')
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -24,6 +29,6 @@ if (!env.success) {
   process.exit(1)
 }
 
-const config = Object.freeze(env.data)
+const config = Object.freeze({ ...env.data, privateKey, publicKey })
 
 export default config

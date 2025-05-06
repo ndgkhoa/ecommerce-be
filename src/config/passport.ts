@@ -1,11 +1,11 @@
 import passport from 'passport'
 import { ExtractJwt, Strategy as JwtStrategy, VerifiedCallback } from 'passport-jwt'
 
-import { publicKey } from '~/config/keys'
+import config from '~/config/env'
 import { JwtPayload } from '~/types'
 
 const jwtOptions = {
-  secretOrKey: publicKey,
+  secretOrKey: config.publicKey,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }
 

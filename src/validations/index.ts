@@ -1,2 +1,2 @@
 export * from '~/validations/user-validation'
-export * from '~/validations/sys-role-validation'
+export * from '~/validations/role-validation'

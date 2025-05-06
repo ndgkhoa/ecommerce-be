@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 import { toJSON } from '~/models/plugins'
 
-const sysRoleSchema = new mongoose.Schema(
+const roleSchema = new mongoose.Schema(
   {
     RoleName: { type: String, required: true, unique: true },
     Description: { type: String }
@@ -10,6 +10,6 @@ const sysRoleSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-sysRoleSchema.plugin(toJSON)
+roleSchema.plugin(toJSON)
 
-export const SysRole = mongoose.model('SysRole', sysRoleSchema)
+export const Role = mongoose.model('Role', roleSchema)

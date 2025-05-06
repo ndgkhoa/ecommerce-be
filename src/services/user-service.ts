@@ -59,7 +59,6 @@ export const getUserById = async (id: string) => {
 
 export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
   const user = await getUserById(id)
-  if (user.UserName !== body.UserName) await checkUserUnique(body.UserName)
   let avatar = user.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)

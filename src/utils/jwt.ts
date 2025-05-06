@@ -1,7 +1,6 @@
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 
 import config from '~/config/env'
-import { privateKey } from '~/config/keys'
 import { JwtPayload } from '~/types'
 
 export const signAccessToken = (payload: JwtPayload) => {
@@ -15,7 +14,7 @@ export const signAccessToken = (payload: JwtPayload) => {
       iat: now,
       exp: now + config.JWT_ACCESS_EXP
     },
-    privateKey,
+    config.privateKey,
     { algorithm: 'RS256' }
   )
 }

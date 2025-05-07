@@ -14,7 +14,7 @@ export const checkUserExist = async (userName: string) => {
   return user
 }
 
-export const checkUserUnique = async (userName: string) => {
+export const checkUserNameUnique = async (userName: string) => {
   const user = await User.findOne({ UserName: userName })
   if (user) {
     throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
@@ -59,11 +59,12 @@ export const getUserById = async (id: string) => {
 
 export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
   const user = await getUserById(id)
+  const hashedPassword = await bcrypt.hash(body.Password, 10)
   let avatar = user.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
-  return await User.findByIdAndUpdate(id, { ...body, Avatar: avatar }, { new: true })
+  return await User.findByIdAndUpdate(id, { ...body, Password: hashedPassword, Avatar: avatar }, { new: true })
 }
 
 export const deleteUserById = async (id: string) => {

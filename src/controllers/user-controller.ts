@@ -27,7 +27,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  await userService.checkUserUnique(req.body.UserName)
+  await userService.checkUserNameUnique(req.body.UserName)
   const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
   sendResponse(res, httpStatus.CREATED, newUser, ApiMessage.Success)

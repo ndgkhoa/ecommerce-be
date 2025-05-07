@@ -2,13 +2,15 @@ import express from 'express'
 
 import userRoute from '~/routes/user-route'
 import roleRoute from '~/routes/role-route'
+import permisstionRoute from '~/routes/permission-route'
 import { ApiError } from '~/types'
 
 const router = express.Router()
 
 const apiRoutes = [
   { path: '/api/user', route: userRoute },
-  { path: '/api/role', route: roleRoute }
+  { path: '/api/role', route: roleRoute },
+  { path: '/api/permission', route: permisstionRoute }
 ]
 
 apiRoutes.forEach(({ path, route }) => {

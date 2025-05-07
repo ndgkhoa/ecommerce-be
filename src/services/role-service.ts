@@ -3,15 +3,7 @@ import { ApiError } from '~/types'
 import { CreateRoleBody, UpdateRoleBody } from '~/validations'
 import { ApiMessage, httpStatus } from '~/constants'
 
-export const checkRoleExist = async (roleName: string) => {
-  const role = await Role.findOne({ RoleName: roleName })
-  if (!role) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
-  }
-  return role
-}
-
-export const checkRoleUnique = async (roleName: string) => {
+export const checkRoleNameUnique = async (roleName: string) => {
   const role = await Role.findOne({ RoleName: roleName })
   if (role) {
     throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)

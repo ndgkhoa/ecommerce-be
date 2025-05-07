@@ -7,6 +7,7 @@ export const createRolePermissionSchema = {
     roleId: objectId
   }),
   body: z.object({
+    RoleId: objectId,
     PermissionId: objectId,
     C: z.boolean(),
     R: z.boolean(),

@@ -7,7 +7,7 @@ export const createRolePermission = async (body: CreateRolePermissionBody) => {
   return new RolePermission(body)
 }
 
-export const getRolePermissionById = async (roleId: string) => {
+export const getRolePermission = async (roleId: string) => {
   const res = await RolePermission.findById(roleId)
   if (!res) {
     throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)

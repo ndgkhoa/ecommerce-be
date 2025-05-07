@@ -14,6 +14,8 @@ const rolePermissionSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+rolePermissionSchema.index({ RoleId: 1, PermissionId: 1 }, { unique: true })
+
 rolePermissionSchema.plugin(toJSON)
 
 export const RolePermission = mongoose.model('RolePermission', rolePermissionSchema)

@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get('/get-role-permission/:roleId', rolePermissionController.getRolePermission)
 router.post('/create-role-permission/:roleId', rolePermissionController.createRolePermission)
-// router.patch('/update-role-permission/:id', rolePermissionController.updateRole)
-// router.delete('/delete-role-permission/:id', rolePermissionController.deleteRole)
+router.put('/update-role-permission', rolePermissionController.updateRolePermission)
+router.delete('/delete-role-permission', rolePermissionController.deleteRolePermission)
 
 export default router

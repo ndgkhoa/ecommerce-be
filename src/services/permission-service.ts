@@ -3,17 +3,17 @@ import { ApiError } from '~/types'
 import { CreatePermissionBody, UpdatePermissionBody } from '~/validations'
 import { ApiMessage, httpStatus } from '~/constants'
 
-export const checkPermissionCodeUnique = async (code: string) => {
-  const permission = await Permission.findOne({ Code: code })
+export const checkPermissionCodeUnique = async (permissionCode: string) => {
+  const permission = await Permission.findOne({ PermissionCode: permissionCode })
   if (permission) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
   }
 }
 
 export const checkPermissionNameUnique = async (permissionName: string) => {
   const permission = await Permission.findOne({ PermissionName: permissionName })
   if (permission) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
   }
 }
 
@@ -28,7 +28,7 @@ export const getPermissionList = async () => {
 export const getPermissionById = async (id: string) => {
   const permission = await Permission.findById(id)
   if (!permission) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
   return permission
 }
@@ -40,6 +40,6 @@ export const updatePermissionById = async (id: string, body: UpdatePermissionBod
 export const deletePermissionById = async (id: string) => {
   const permission = await Permission.findByIdAndDelete(id)
   if (!permission) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
 }

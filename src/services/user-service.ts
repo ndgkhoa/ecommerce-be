@@ -9,7 +9,7 @@ import { uploadImage } from '~/utils/file'
 export const checkUserExist = async (userName: string) => {
   const user = await User.findOne({ UserName: userName }).select('+Password')
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
   return user
 }
@@ -17,7 +17,7 @@ export const checkUserExist = async (userName: string) => {
 export const checkUserNameUnique = async (userName: string) => {
   const user = await User.findOne({ UserName: userName })
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
   }
 }
 
@@ -52,7 +52,7 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
   return user
 }
@@ -70,6 +70,6 @@ export const updateUserById = async (id: string, body: UpdateUserBody, avatarFil
 export const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
 }

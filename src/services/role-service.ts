@@ -6,7 +6,7 @@ import { ApiMessage, httpStatus } from '~/constants'
 export const checkRoleNameUnique = async (roleName: string) => {
   const role = await Role.findOne({ RoleName: roleName })
   if (role) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.AlreadyExist)
+    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
   }
 }
 
@@ -21,7 +21,7 @@ export const getRoleList = async () => {
 export const getRoleById = async (id: string) => {
   const role = await Role.findById(id)
   if (!role) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
   return role
 }
@@ -33,6 +33,6 @@ export const updateRoleById = async (id: string, body: UpdateRoleBody) => {
 export const deleteRoleById = async (id: string) => {
   const role = await Role.findByIdAndDelete(id)
   if (!role) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.NotFound)
+    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
   }
 }

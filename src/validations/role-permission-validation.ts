@@ -16,7 +16,9 @@ export const createRolePermissionSchema = {
   })
 }
 
-export const updateRolePermissionSchema = createRolePermissionSchema
+export const updateRolePermissionSchema = {
+  body: createRolePermissionSchema.body.omit({ RoleId: true, PermissionId: true }).extend({ Id: objectId })
+}
 
 export type CreateRolePermissionBody = z.infer<typeof createRolePermissionSchema.body>
 export type UpdateRolePermissionBody = z.infer<typeof updateRolePermissionSchema.body>

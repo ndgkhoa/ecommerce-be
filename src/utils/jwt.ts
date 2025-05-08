@@ -1,7 +1,8 @@
-import jwt, { JsonWebTokenError } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 import config from '~/config/env'
-import { JwtPayload } from '~/types'
+import { httpStatus } from '~/constants'
+import { ApiError, JwtPayload } from '~/types'
 
 export const signAccessToken = (payload: JwtPayload) => {
   const now = Math.floor(Date.now() / 1000)
@@ -38,6 +39,6 @@ export const verifyRefreshToken = (token: string) => {
   try {
     return jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload
   } catch {
-    throw new JsonWebTokenError('Invalid token')
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token')
   }
 }

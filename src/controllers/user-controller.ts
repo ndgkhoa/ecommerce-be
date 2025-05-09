@@ -4,7 +4,7 @@ import { JwtPayload } from '~/types'
 import { userService } from '~/services'
 import { sendResponse } from '~/utils/helpers'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/jwt'
-import { HttpStatus, Message } from '~/constants'
+import { HttpStatusCode, Message } from '~/constants'
 
 export const login = async (req: Request, res: Response) => {
   const user = await userService.checkUserExist(req.body.UserName)
@@ -13,34 +13,34 @@ export const login = async (req: Request, res: Response) => {
   const accessToken = signAccessToken(payload)
   const refreshToken = signRefreshToken(user.id)
   const response = { UserId: user.id, AccessToken: accessToken, RefreshToken: refreshToken }
-  sendResponse(res, HttpStatus.OK, response, Message.LOGIN_SUCCESS)
+  sendResponse(res, HttpStatusCode.OK, response, Message.LOGIN_SUCCESS)
 }
 
 export const getUserList = async (req: Request, res: Response) => {
   const users = await userService.getUserList()
-  sendResponse(res, HttpStatus.OK, users, Message.SUCCESS)
+  sendResponse(res, HttpStatusCode.OK, users, Message.SUCCESS)
 }
 
 export const getUserById = async (req: Request, res: Response) => {
   const user = await userService.getUserById(req.params.id)
-  sendResponse(res, HttpStatus.OK, user, Message.SUCCESS)
+  sendResponse(res, HttpStatusCode.OK, user, Message.SUCCESS)
 }
 
 export const createUser = async (req: Request, res: Response) => {
   await userService.checkUserNameUnique(req.body.UserName)
   const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
-  sendResponse(res, HttpStatus.CREATED, newUser, Message.CREATED)
+  sendResponse(res, HttpStatusCode.CREATED, newUser, Message.CREATED)
 }
 
 export const updateUser = async (req: Request, res: Response) => {
   const updatedUser = await userService.updateUserById(req.params.id, req.body, req.file)
-  sendResponse(res, HttpStatus.OK, updatedUser, Message.UPDATED)
+  sendResponse(res, HttpStatusCode.OK, updatedUser, Message.UPDATED)
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
   await userService.deleteUserById(req.params.id)
-  sendResponse(res, HttpStatus.OK, null, Message.DELETED)
+  sendResponse(res, HttpStatusCode.OK, null, Message.DELETED)
 }
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
@@ -48,7 +48,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
   const user = await userService.getUserById(token.sub)
   const payload = { sub: user.id }
   const newAccessToken = signAccessToken(payload)
-  sendResponse(res, HttpStatus.OK, { AccessToken: newAccessToken }, Message.SUCCESS)
+  sendResponse(res, HttpStatusCode.OK, { AccessToken: newAccessToken }, Message.SUCCESS)
 }
 
 export const getInfoMine = async (req: Request, res: Response) => {

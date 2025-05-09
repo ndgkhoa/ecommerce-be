@@ -2,24 +2,24 @@ import { Request, Response } from 'express'
 
 import { rolePermissionService } from '~/services'
 import { sendResponse } from '~/utils/helpers'
-import { HttpStatus, Message } from '~/constants'
+import { HttpStatusCode, Message } from '~/constants'
 
-export const getRolePermission = async (req: Request, res: Response) => {
-  const permissions = await rolePermissionService.getRolePermission(req.params.roleId)
-  sendResponse(res, HttpStatus.OK, permissions, Message.SUCCESS)
+export const getRolePermissions = async (req: Request, res: Response) => {
+  const rolePermissions = await rolePermissionService.getRolePermissions(req.params.roleId)
+  sendResponse(res, HttpStatusCode.OK, rolePermissions, Message.SUCCESS)
 }
 
-export const createRolePermission = async (req: Request, res: Response) => {
-  const newPermissions = await rolePermissionService.createRolePermission(req.params.roleId, req.body)
-  sendResponse(res, HttpStatus.OK, newPermissions, Message.CREATED)
+export const createRolePermissions = async (req: Request, res: Response) => {
+  const newRolePermissions = await rolePermissionService.createRolePermissions(req.params.roleId, req.body)
+  sendResponse(res, HttpStatusCode.OK, newRolePermissions, Message.CREATED)
 }
 
-export const updateRolePermission = async (req: Request, res: Response) => {
-  const updatedPermissions = await rolePermissionService.updateRolePermission(req.body)
-  sendResponse(res, HttpStatus.OK, updatedPermissions, Message.UPDATED)
+export const updateRolePermissions = async (req: Request, res: Response) => {
+  const updatedRolesPermissions = await rolePermissionService.updateRolePermissions(req.body)
+  sendResponse(res, HttpStatusCode.OK, updatedRolesPermissions, Message.UPDATED)
 }
 
-export const deleteRolePermission = async (req: Request, res: Response) => {
-  await rolePermissionService.deleteRolePermission(req.body)
-  sendResponse(res, HttpStatus.OK, null, Message.DELETED)
+export const deleteRolePermissions = async (req: Request, res: Response) => {
+  await rolePermissionService.deleteRolePermissions(req.body)
+  sendResponse(res, HttpStatusCode.OK, null, Message.DELETED)
 }

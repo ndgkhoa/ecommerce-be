@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 
 import { ApiError } from '~/types'
 import { sendResponse } from '~/utils/helpers'
-import { HttpStatus, Message } from '~/constants'
+import { HttpStatusCode, Message } from '~/constants'
 
 export const errorConverter = (err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (!(err instanceof ApiError)) err = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, Message.INTERNAL_SERVER_ERROR)
+  if (!(err instanceof ApiError))
+    err = new ApiError(HttpStatusCode.INTERNAL_SERVER_ERROR, Message.INTERNAL_SERVER_ERROR)
   next(err)
 }
 

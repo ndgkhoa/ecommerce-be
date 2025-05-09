@@ -23,6 +23,7 @@ export const Message = {
   REGISTER_FAILED: 'Đăng ký thất bại.',
 
   NOT_FOUND: 'Không tìm thấy dữ liệu.',
+  ROUTE_NOT_FOUND: 'Đường dẫn không tồn tại.',
   CONFLICT: 'Tài nguyên đã tồn tại.',
   INTERNAL_SERVER_ERROR: 'Lỗi máy chủ. Vui lòng thử lại sau.',
   SERVICE_UNAVAILABLE: 'Dịch vụ hiện không khả dụng.',

@@ -3,13 +3,13 @@ import bcrypt from 'bcryptjs'
 import { User } from '~/models'
 import { ApiError } from '~/types'
 import { CreateUserBody, UpdateUserBody } from '~/validations'
-import { HttpStatus, Message } from '~/constants'
+import { HttpStatusCode, Message } from '~/constants'
 import { uploadImage } from '~/utils/file'
 
 export const checkUserExist = async (userName: string) => {
   const user = await User.findOne({ UserName: userName }).select('+Password')
   if (!user) {
-    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }
   return user
 }
@@ -17,26 +17,26 @@ export const checkUserExist = async (userName: string) => {
 export const checkUserNameUnique = async (userName: string) => {
   const user = await User.findOne({ UserName: userName })
   if (user) {
-    throw new ApiError(HttpStatus.CONFLICT, Message.CONFLICT)
+    throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
   }
 }
 
-export const checkPassword = async (password: string, hashedPassword: string) => {
-  const isMatch = await bcrypt.compare(password, hashedPassword)
+export const checkPassword = async (password: string, hash: string) => {
+  const isMatch = await bcrypt.compare(password, hash)
   if (!isMatch) {
-    throw new ApiError(HttpStatus.UNAUTHORIZED, Message.INVALID_PASSWORD)
+    throw new ApiError(HttpStatusCode.UNAUTHORIZED, Message.INVALID_PASSWORD)
   }
 }
 
 export const createUser = async (body: CreateUserBody, avatarFile?: Express.Multer.File) => {
-  const hashedPassword = await bcrypt.hash(body.Password, 10)
+  const hash = await bcrypt.hash(body.Password, await bcrypt.genSalt())
   let avatar = null
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
   return new User({
     ...body,
-    Password: hashedPassword,
+    Password: hash,
     Avatar: avatar
   })
 }
@@ -52,24 +52,24 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }
   return user
 }
 
 export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
-  const user = await getUserById(id)
-  const hashedPassword = await bcrypt.hash(body.Password, 10)
-  let avatar = user.Avatar
+  const updatedUser = await getUserById(id)
+  const hash = await bcrypt.hash(body.Password, await bcrypt.genSalt())
+  let avatar = updatedUser.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
-  return await User.findByIdAndUpdate(id, { ...body, Password: hashedPassword, Avatar: avatar }, { new: true })
+  return await User.findByIdAndUpdate(id, { ...body, Password: hash, Avatar: avatar }, { new: true })
 }
 
 export const deleteUserById = async (id: string) => {
-  const user = await User.findByIdAndDelete(id)
-  if (!user) {
-    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
+  const deletedUser = await User.findByIdAndDelete(id)
+  if (!deletedUser) {
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }
 }

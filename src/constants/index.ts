@@ -1,2 +1,2 @@
 export * from '~/constants/message'
-export * from '~/constants/httpStatus'
+export * from '~/constants/statusCode'

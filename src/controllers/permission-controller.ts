@@ -2,16 +2,16 @@ import { Request, Response } from 'express'
 
 import { permissionService } from '~/services'
 import { sendResponse } from '~/utils/helpers'
-import { ApiMessage, httpStatus } from '~/constants'
+import { HttpStatus, Message } from '~/constants'
 
 export const getPermissionList = async (req: Request, res: Response) => {
   const permissions = await permissionService.getPermissionList()
-  sendResponse(res, httpStatus.OK, permissions, ApiMessage.Success)
+  sendResponse(res, HttpStatus.OK, permissions, Message.SUCCESS)
 }
 
 export const getPermissionById = async (req: Request, res: Response) => {
   const permission = await permissionService.getPermissionById(req.params.id)
-  sendResponse(res, httpStatus.OK, permission, ApiMessage.Success)
+  sendResponse(res, HttpStatus.OK, permission, Message.SUCCESS)
 }
 
 export const createPermission = async (req: Request, res: Response) => {
@@ -19,15 +19,15 @@ export const createPermission = async (req: Request, res: Response) => {
   await permissionService.checkPermissionCodeUnique(req.body.PermissionCode)
   const newPermission = await permissionService.createPermission(req.body)
   await newPermission.save()
-  sendResponse(res, httpStatus.CREATED, newPermission, ApiMessage.Success)
+  sendResponse(res, HttpStatus.CREATED, newPermission, Message.CREATED)
 }
 
 export const updatePermission = async (req: Request, res: Response) => {
   const updatedPermission = await permissionService.updatePermissionById(req.params.id, req.body)
-  sendResponse(res, httpStatus.OK, updatedPermission, ApiMessage.Success)
+  sendResponse(res, HttpStatus.OK, updatedPermission, Message.UPDATED)
 }
 
 export const deletePermission = async (req: Request, res: Response) => {
   await permissionService.deletePermissionById(req.params.id)
-  sendResponse(res, httpStatus.OK, null, ApiMessage.Success)
+  sendResponse(res, HttpStatus.OK, null, Message.DELETED)
 }

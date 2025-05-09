@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 import config from '~/config/env'
+import logger from '~/config/logger'
 
 const connectDB = async () => {
   try {
@@ -9,8 +10,9 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000
     })
+    logger.info('MongoDB connected successfully')
   } catch (error) {
-    console.error('MongoDB connection error:', error)
+    logger.error('MongoDB connection error:', error)
     process.exit(1)
   }
 }

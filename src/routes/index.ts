@@ -5,6 +5,7 @@ import roleRoute from '~/routes/role-route'
 import permisstionRoute from '~/routes/permission-route'
 import rolePermisstionRoute from '~/routes/role-permission-route'
 import { ApiError } from '~/types'
+import { HttpStatus, Message } from '~/constants'
 
 const router = express.Router()
 
@@ -20,7 +21,7 @@ apiRoutes.forEach(({ path, route }) => {
 })
 
 router.all('*', (req, res, next) => {
-  next(new ApiError(404, 'Resource not found.'))
+  next(new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND))
 })
 
 export default router

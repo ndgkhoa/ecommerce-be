@@ -1,7 +1,7 @@
 import { RolePermission } from '~/models'
 import { ApiError } from '~/types'
 import { CreateRolePermissionBody, UpdateRolePermissionBody } from '~/validations'
-import { ApiMessage, httpStatus } from '~/constants'
+import { HttpStatus, Message } from '~/constants'
 import { permissionService, roleService } from '~/services'
 
 export const createRolePermission = async (roleId: string, body: CreateRolePermissionBody[]) => {
@@ -18,7 +18,7 @@ export const createRolePermission = async (roleId: string, body: CreateRolePermi
       { ordered: false }
     )
   } catch {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
+    throw new ApiError(HttpStatus.CONFLICT, Message.CONFLICT)
   }
 }
 
@@ -49,7 +49,7 @@ export const updateRolePermission = async (body: UpdateRolePermissionBody[]) => 
   const updatePromises = body.map(async (item) => {
     const permission = await RolePermission.findById(item.Id)
     if (!permission) {
-      throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+      throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
     }
     return await RolePermission.findByIdAndUpdate(
       item.Id,
@@ -68,6 +68,6 @@ export const updateRolePermission = async (body: UpdateRolePermissionBody[]) => 
 export const deleteRolePermission = async (ids: string[]) => {
   const permissions = await RolePermission.deleteMany({ _id: { $in: ids } })
   if (permissions.deletedCount === 0) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
 }

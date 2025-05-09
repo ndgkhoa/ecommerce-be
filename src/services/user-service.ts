@@ -3,13 +3,13 @@ import bcrypt from 'bcryptjs'
 import { User } from '~/models'
 import { ApiError } from '~/types'
 import { CreateUserBody, UpdateUserBody } from '~/validations'
-import { ApiMessage, httpStatus } from '~/constants'
+import { HttpStatus, Message } from '~/constants'
 import { uploadImage } from '~/utils/file'
 
 export const checkUserExist = async (userName: string) => {
   const user = await User.findOne({ UserName: userName }).select('+Password')
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
   return user
 }
@@ -17,14 +17,14 @@ export const checkUserExist = async (userName: string) => {
 export const checkUserNameUnique = async (userName: string) => {
   const user = await User.findOne({ UserName: userName })
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
+    throw new ApiError(HttpStatus.CONFLICT, Message.CONFLICT)
   }
 }
 
 export const checkPassword = async (password: string, hashedPassword: string) => {
   const isMatch = await bcrypt.compare(password, hashedPassword)
   if (!isMatch) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, ApiMessage.PasswordIncorrect)
+    throw new ApiError(HttpStatus.UNAUTHORIZED, Message.INVALID_PASSWORD)
   }
 }
 
@@ -52,7 +52,7 @@ export const getUserList = async () => {
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
   return user
 }
@@ -70,6 +70,6 @@ export const updateUserById = async (id: string, body: UpdateUserBody, avatarFil
 export const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id)
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
 }

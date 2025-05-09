@@ -1,11 +1,22 @@
 import { Request, Response, NextFunction } from 'express'
 import { ZodSchema } from 'zod'
 
-export const validate = (schema: Record<string, ZodSchema>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (schema.body) req.body = schema.body.parse(req.body)
-    if (schema.query) req.query = schema.query.parse(req.query)
-    if (schema.params) req.params = schema.params.parse(req.params)
-    next()
+import { ApiError } from '~/types'
+import { HttpStatus, Message } from '~/constants'
+
+export const validate = (schema: Record<string, ZodSchema>) => (req: Request, res: Response, next: NextFunction) => {
+  for (const key of ['body', 'query', 'params'] as const) {
+    if (schema[key]) {
+      const result = schema[key].safeParse(req[key])
+      if (!result.success) {
+        let message = result.error.errors[0].message
+        if (message.toLowerCase() === 'required') {
+          message = Message.MISSING_REQUIRED_FIELDS
+        }
+        return next(new ApiError(HttpStatus.BAD_REQUEST, message))
+      }
+      req[key] = result.data
+    }
   }
+  return next()
 }

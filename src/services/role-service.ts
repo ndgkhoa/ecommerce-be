@@ -1,12 +1,12 @@
 import { Role } from '~/models'
 import { ApiError } from '~/types'
 import { CreateRoleBody, UpdateRoleBody } from '~/validations'
-import { ApiMessage, httpStatus } from '~/constants'
+import { HttpStatus, Message } from '~/constants'
 
 export const checkRoleNameUnique = async (roleName: string) => {
   const role = await Role.findOne({ RoleName: roleName })
   if (role) {
-    throw new ApiError(httpStatus.CONFLICT, ApiMessage.RecordAlreadyExist)
+    throw new ApiError(HttpStatus.CONFLICT, Message.CONFLICT)
   }
 }
 
@@ -21,7 +21,7 @@ export const getRoleList = async () => {
 export const getRoleById = async (id: string) => {
   const role = await Role.findById(id)
   if (!role) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
   return role
 }
@@ -33,6 +33,6 @@ export const updateRoleById = async (id: string, body: UpdateRoleBody) => {
 export const deleteRoleById = async (id: string) => {
   const role = await Role.findByIdAndDelete(id)
   if (!role) {
-    throw new ApiError(httpStatus.NOT_FOUND, ApiMessage.RecordNotFound)
+    throw new ApiError(HttpStatus.NOT_FOUND, Message.NOT_FOUND)
   }
 }

@@ -3,6 +3,8 @@ import fs from 'fs'
 import path from 'path'
 import { z } from 'zod'
 
+import logger from '~/config/logger'
+
 const privateKey = fs.readFileSync(path.join(__dirname, '../keys/private.key'), 'utf8')
 const publicKey = fs.readFileSync(path.join(__dirname, '../keys/public.key'), 'utf8')
 
@@ -23,7 +25,7 @@ const envSchema = z.object({
 const env = envSchema.safeParse(process.env)
 
 if (!env.success) {
-  console.error(env.error.format())
+  logger.error('Invalid environment variables:', env.error.format())
   process.exit(1)
 }
 

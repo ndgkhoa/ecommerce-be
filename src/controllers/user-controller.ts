@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
 import { JwtPayload } from '~/types'
-import { userService } from '~/services'
+import { rolePermissionService, userRoleService, userService } from '~/services'
 import { sendResponse } from '~/utils/helpers'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/jwt'
 import { HttpStatusCode, Message } from '~/constants'
@@ -54,27 +54,11 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 export const getInfoMine = async (req: Request, res: Response) => {
   const token = req.user as JwtPayload
   const user = await userService.getUserById(token.sub)
+  const userRoles = await userRoleService.getUserRoles(user.id)
+  const roleIds = userRoles.map((role) => role.RoleId)
+  const permissions = await Promise.all(roleIds.map((roleId) => rolePermissionService.getRolePermissions(roleId)))
   res.send({
     User: user,
-    Permissions: [
-      {
-        ActivityId: '1',
-        ActivityName: 'Quản lý người dùng',
-        Code: 'USER_MANAGEMENT',
-        C: true,
-        R: true,
-        U: true,
-        D: true
-      },
-      {
-        ActivityId: '2',
-        ActivityName: 'Quản lý sản phẩm',
-        Code: 'PRODUCT_MANAGEMENT',
-        C: true,
-        R: true,
-        U: true,
-        D: true
-      }
-    ]
+    Permissions: permissions.flatMap((permission) => permission.Permissions)
   })
 }

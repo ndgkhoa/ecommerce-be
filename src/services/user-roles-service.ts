@@ -20,6 +20,9 @@ export const createRolesForUser = async (userId: string, body: CreateUserRolesBo
 
 export const getRolesByUserId = async (userId: string) => {
   const userRoles = await UserRoles.find({ UserId: userId })
+  if (!userRoles) {
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
+  }
   return await Promise.all(
     userRoles.map(async (item) => {
       const role = await roleService.getRoleById(item.RoleId)

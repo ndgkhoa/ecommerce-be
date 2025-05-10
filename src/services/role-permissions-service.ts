@@ -1,8 +1,17 @@
 import { Permission, RolePermissions } from '~/models'
-import { ApiError } from '~/types'
+import { ActionType, ApiError } from '~/types'
 import { CreateRolePermissionsBody, UpdateRolePermissionsBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 import { roleService } from '~/services'
+
+export const checkRoleHasPermission = async (roleIds: string[], permissionId: string, action: ActionType) => {
+  const record = await RolePermissions.findOne({
+    RoleId: { $in: roleIds },
+    PermissionId: permissionId,
+    [action]: true
+  })
+  return !!record
+}
 
 export const createPermissionsForRole = async (roleId: string, body: CreateRolePermissionsBody[]) => {
   try {
@@ -30,14 +39,14 @@ export const getPermissionsByRoleId = async (roleId: string) => {
   const permissions = await Permission.find({
     _id: { $in: rolePermissions.map((item) => item.PermissionId) }
   })
-  const permissionMap = Object.fromEntries(permissions.map((p) => [String(p._id), p.PermissionName]))
+  const permissionMap = Object.fromEntries(permissions.map((p) => [String(p.id), p.PermissionName]))
   return {
     RoleId: roleId,
     RoleName: role.RoleName,
     Permissions: rolePermissions.map((item) => ({
       Id: item.id,
       PermissionId: item.PermissionId,
-      PermissionName: permissionMap[item.PermissionId] || '',
+      PermissionName: permissionMap[item.PermissionId],
       C: item.C,
       R: item.R,
       U: item.U,

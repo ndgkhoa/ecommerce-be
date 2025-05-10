@@ -55,7 +55,7 @@ export const getInfoMine = async (req: Request, res: Response) => {
   const token = req.user as JwtPayload
   const user = await userService.getUserById(token.sub)
   const userRoles = await userRolesService.getRolesByUserId(user.id)
-  const roleIds = userRoles.map((role) => role.RoleId)
+  const roleIds = userRoles.map((ur) => ur.RoleId)
   const permissions = await Promise.all(roleIds.map((roleId) => rolePermissionsService.getPermissionsByRoleId(roleId)))
   res.send({
     User: user,

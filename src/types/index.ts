@@ -14,6 +14,8 @@ export interface TokenType {
 
 export type JwtPayload = Pick<TokenType, 'sub'>
 
+export type ActionType = 'C' | 'R' | 'U' | 'D'
+
 export type ApiResponse<T> = {
   StatusCode: number
   Message: string

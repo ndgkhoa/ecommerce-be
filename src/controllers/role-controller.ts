@@ -15,7 +15,7 @@ export const getRoleById = async (req: Request, res: Response) => {
 }
 
 export const createRole = async (req: Request, res: Response) => {
-  await roleService.checkRoleNameUnique(req.body.RoleName)
+  await roleService.checkUniqueByRoleName(req.body.RoleName)
   const newRole = await roleService.createRole(req.body)
   await newRole.save()
   sendResponse(res, HttpStatusCode.CREATED, newRole, Message.CREATED)

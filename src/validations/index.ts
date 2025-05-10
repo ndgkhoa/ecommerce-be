@@ -1,5 +1,5 @@
 export * from '~/validations/user-validation'
 export * from '~/validations/role-validation'
 export * from '~/validations/permission-validation'
-export * from '~/validations/role-permission-validation'
-export * from '~/validations/user-role-validation'
+export * from '~/validations/role-permissions-validation'
+export * from '~/validations/user-roles-validation'

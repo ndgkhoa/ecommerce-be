@@ -15,8 +15,8 @@ export const getPermissionById = async (req: Request, res: Response) => {
 }
 
 export const createPermission = async (req: Request, res: Response) => {
-  await permissionService.checkPermissionNameUnique(req.body.PermissionName)
-  await permissionService.checkPermissionCodeUnique(req.body.PermissionCode)
+  await permissionService.checkUniqueByPermissionName(req.body.PermissionName)
+  await permissionService.checkUniqueByPermissionCode(req.body.PermissionCode)
   const newPermission = await permissionService.createPermission(req.body)
   await newPermission.save()
   sendResponse(res, HttpStatusCode.CREATED, newPermission, Message.CREATED)

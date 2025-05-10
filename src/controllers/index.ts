@@ -1,5 +1,5 @@
 export * as userController from '~/controllers/user-controller'
 export * as roleController from '~/controllers/role-controller'
 export * as permissionController from '~/controllers/permission-controller'
-export * as rolePermissionController from '~/controllers/role-permission-controller'
-export * as userRoleController from '~/controllers/user-role-controller'
+export * as rolePermissionsController from '~/controllers/role-permissions-controller'
+export * as userRolesController from '~/controllers/user-roles-controller'

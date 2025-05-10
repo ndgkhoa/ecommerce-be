@@ -1,5 +1,5 @@
 export * from '~/models/user-model'
 export * from '~/models/role-model'
 export * from '~/models/permission-model'
-export * from '~/models/role-permission-model'
-export * from '~/models/user-role-model'
+export * from '~/models/role-permissions-model'
+export * from '~/models/user-roles-model'

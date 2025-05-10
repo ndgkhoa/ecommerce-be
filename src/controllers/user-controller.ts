@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
 
 import { JwtPayload } from '~/types'
-import { rolePermissionService, userRoleService, userService } from '~/services'
+import { rolePermissionsService, userRolesService, userService } from '~/services'
 import { sendResponse } from '~/utils/helpers'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/jwt'
 import { HttpStatusCode, Message } from '~/constants'
 
 export const login = async (req: Request, res: Response) => {
-  const user = await userService.checkUserExist(req.body.UserName)
+  const user = await userService.getUserByUserName(req.body.UserName)
   await userService.checkPassword(req.body.Password, user.Password)
   const payload = { sub: user.id }
   const accessToken = signAccessToken(payload)
@@ -27,7 +27,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  await userService.checkUserNameUnique(req.body.UserName)
+  await userService.checkUniqueByUserName(req.body.UserName)
   const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
   sendResponse(res, HttpStatusCode.CREATED, newUser, Message.CREATED)
@@ -54,9 +54,9 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 export const getInfoMine = async (req: Request, res: Response) => {
   const token = req.user as JwtPayload
   const user = await userService.getUserById(token.sub)
-  const userRoles = await userRoleService.getUserRoles(user.id)
+  const userRoles = await userRolesService.getRolesByUserId(user.id)
   const roleIds = userRoles.map((role) => role.RoleId)
-  const permissions = await Promise.all(roleIds.map((roleId) => rolePermissionService.getRolePermissions(roleId)))
+  const permissions = await Promise.all(roleIds.map((roleId) => rolePermissionsService.getPermissionsByRoleId(roleId)))
   res.send({
     User: user,
     Permissions: permissions.flatMap((permission) => permission.Permissions)

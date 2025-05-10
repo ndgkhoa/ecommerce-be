@@ -3,7 +3,7 @@ import { ApiError } from '~/types'
 import { CreateRoleBody, UpdateRoleBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 
-export const checkRoleNameUnique = async (roleName: string) => {
+export const checkUniqueByRoleName = async (roleName: string) => {
   const role = await Role.findOne({ RoleName: roleName })
   if (role) {
     throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)

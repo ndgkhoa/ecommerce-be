@@ -6,15 +6,7 @@ import { CreateUserBody, UpdateUserBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 import { uploadImage } from '~/utils/file'
 
-export const checkUserExist = async (userName: string) => {
-  const user = await User.findOne({ UserName: userName }).select('+Password')
-  if (!user) {
-    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
-  }
-  return user
-}
-
-export const checkUserNameUnique = async (userName: string) => {
+export const checkUniqueByUserName = async (userName: string) => {
   const user = await User.findOne({ UserName: userName })
   if (user) {
     throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
@@ -51,6 +43,14 @@ export const getUserList = async () => {
 
 export const getUserById = async (id: string) => {
   const user = await User.findById(id)
+  if (!user) {
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
+  }
+  return user
+}
+
+export const getUserByUserName = async (userName: string) => {
+  const user = await User.findOne({ UserName: userName }).select('+Password')
   if (!user) {
     throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }

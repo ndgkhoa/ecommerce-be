@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 import { toJSON } from '~/models/plugins'
 
-const rolePermissionSchema = new mongoose.Schema(
+const rolePermissionsSchema = new mongoose.Schema(
   {
     RoleId: { type: String, required: true },
     PermissionId: { type: String, required: true },
@@ -14,8 +14,8 @@ const rolePermissionSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-rolePermissionSchema.index({ RoleId: 1, PermissionId: 1 }, { unique: true })
+rolePermissionsSchema.index({ RoleId: 1, PermissionId: 1 }, { unique: true })
 
-rolePermissionSchema.plugin(toJSON)
+rolePermissionsSchema.plugin(toJSON)
 
-export const RolePermission = mongoose.model('RolePermission', rolePermissionSchema)
+export const RolePermissions = mongoose.model('RolePermissions', rolePermissionsSchema)

@@ -3,14 +3,14 @@ import { ApiError } from '~/types'
 import { CreatePermissionBody, UpdatePermissionBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 
-export const checkPermissionCodeUnique = async (permissionCode: string) => {
+export const checkUniqueByPermissionCode = async (permissionCode: string) => {
   const permission = await Permission.findOne({ PermissionCode: permissionCode })
   if (permission) {
     throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
   }
 }
 
-export const checkPermissionNameUnique = async (permissionName: string) => {
+export const checkUniqueByPermissionName = async (permissionName: string) => {
   const permission = await Permission.findOne({ PermissionName: permissionName })
   if (permission) {
     throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
@@ -27,6 +27,14 @@ export const getPermissionList = async () => {
 
 export const getPermissionById = async (id: string) => {
   const permission = await Permission.findById(id)
+  if (!permission) {
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
+  }
+  return permission
+}
+
+export const getPermissionByPermissionCode = async (permissionCode: string) => {
+  const permission = await Permission.findOne({ PermissionCode: permissionCode })
   if (!permission) {
     throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }

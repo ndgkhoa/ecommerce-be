@@ -1,12 +1,12 @@
-import { UserRole } from '~/models'
+import { UserRoles } from '~/models'
 import { ApiError } from '~/types'
-import { CreateUserRoleBody } from '~/validations'
+import { CreateUserRolesBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 import { roleService } from '~/services'
 
-export const createUserRoles = async (userId: string, body: CreateUserRoleBody[]) => {
+export const createRolesForUser = async (userId: string, body: CreateUserRolesBody[]) => {
   try {
-    return await UserRole.insertMany(
+    return await UserRoles.insertMany(
       body.map((item) => ({
         UserId: userId,
         RoleId: item
@@ -18,8 +18,8 @@ export const createUserRoles = async (userId: string, body: CreateUserRoleBody[]
   }
 }
 
-export const getUserRoles = async (userId: string) => {
-  const userRoles = await UserRole.find({ UserId: userId })
+export const getRolesByUserId = async (userId: string) => {
+  const userRoles = await UserRoles.find({ UserId: userId })
   return await Promise.all(
     userRoles.map(async (item) => {
       const role = await roleService.getRoleById(item.RoleId)
@@ -34,7 +34,7 @@ export const getUserRoles = async (userId: string) => {
 }
 
 export const deleteUserRoles = async (ids: string[]) => {
-  const deletedUserRoles = await UserRole.deleteMany({ _id: { $in: ids } })
+  const deletedUserRoles = await UserRoles.deleteMany({ _id: { $in: ids } })
   if (deletedUserRoles.deletedCount === 0) {
     throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }

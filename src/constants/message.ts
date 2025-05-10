@@ -18,7 +18,7 @@ export const Message = {
 
   UNAUTHORIZED: 'Không có quyền truy cập.',
   FORBIDDEN: 'Không có quyền thực hiện hành động này.',
-  TOKEN_INVALID: 'Token không hợp lệ hoặc đã hết hạn.',
+  INVALID_TOKEN: 'Token không hợp lệ hoặc đã hết hạn.',
   LOGIN_FAILED: 'Đăng nhập thất bại.',
   REGISTER_FAILED: 'Đăng ký thất bại.',
 

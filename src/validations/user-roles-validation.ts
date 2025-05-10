@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { objectId } from '~/validations/custom-validation'
 
-export const createUserRoleSchema = {
+export const createUserRolesSchema = {
   params: z.object({
     userId: objectId
   }),
@@ -11,4 +11,4 @@ export const createUserRoleSchema = {
   })
 }
 
-export type CreateUserRoleBody = z.infer<typeof createUserRoleSchema.body>
+export type CreateUserRolesBody = z.infer<typeof createUserRolesSchema.body>

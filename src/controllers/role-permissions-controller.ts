@@ -5,7 +5,7 @@ import { sendResponse } from '~/utils/helpers'
 import { HttpStatusCode, Message } from '~/constants'
 
 export const getRolePermissions = async (req: Request, res: Response) => {
-  const rolePermissions = await rolePermissionsService.getPermissionsByRoleId(req.params.roleId)
+  const rolePermissions = await rolePermissionsService.getPermissionsByRoleId(req.query.roleId as string)
   sendResponse(res, HttpStatusCode.OK, rolePermissions, Message.SUCCESS)
 }
 

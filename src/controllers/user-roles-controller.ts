@@ -5,7 +5,7 @@ import { sendResponse } from '~/utils/helpers'
 import { HttpStatusCode, Message } from '~/constants'
 
 export const getUserRoles = async (req: Request, res: Response) => {
-  const userRoles = await userRolesService.getRolesByUserId(req.params.userId)
+  const userRoles = await userRolesService.getRolesByUserId(req.query.userId as string)
   sendResponse(res, HttpStatusCode.OK, userRoles, Message.SUCCESS)
 }
 

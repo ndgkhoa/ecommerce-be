@@ -14,7 +14,7 @@
     "prepare": "husky || true"
   },
   "keywords": [],
-  "author": "",
+  "author": "ngdangkhoa2330@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.21.0",

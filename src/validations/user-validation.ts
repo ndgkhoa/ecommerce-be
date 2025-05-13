@@ -6,8 +6,8 @@ import { objectId, password } from '~/validations/custom-validation'
 export const createUserSchema = {
   body: z.object({
     UserName: z.string().min(3, Message.USERNAME_TOO_SHORT),
-    Password: password,
     Email: z.string().email(Message.INVALID_EMAIL),
+    Password: password,
     PhoneNumber: z.string().min(10, Message.INVALID_PHONE),
     FullName: z.string().min(3, Message.FULLNAME_TOO_SHORT)
   })

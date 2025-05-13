@@ -6,8 +6,8 @@ import { CreateUserBody, UpdateUserBody } from '~/validations'
 import { HttpStatusCode, Message } from '~/constants'
 import { uploadImage } from '~/utils/file'
 
-export const checkUniqueByUserName = async (userName: string) => {
-  const user = await User.findOne({ UserName: userName })
+export const checkUniqueByEmail = async (email: string) => {
+  const user = await User.findOne({ Email: email })
   if (user) {
     throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
   }
@@ -21,7 +21,7 @@ export const checkPassword = async (password: string, hash: string) => {
 }
 
 export const createUser = async (body: CreateUserBody, avatarFile?: Express.Multer.File) => {
-  const hash = await bcrypt.hash(body.Password, await bcrypt.genSalt())
+  const hash = await bcrypt.hash(body.Password, 10)
   let avatar = null
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
@@ -49,8 +49,8 @@ export const getUserById = async (id: string) => {
   return user
 }
 
-export const getUserByUserName = async (userName: string) => {
-  const user = await User.findOne({ UserName: userName }).select('+Password')
+export const getUserByEmail = async (email: string) => {
+  const user = await User.findOne({ Email: email }).select('+Password')
   if (!user) {
     throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
   }
@@ -59,7 +59,7 @@ export const getUserByUserName = async (userName: string) => {
 
 export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
   const updatedUser = await getUserById(id)
-  const hash = await bcrypt.hash(body.Password, await bcrypt.genSalt())
+  const hash = await bcrypt.hash(body.Password, 10)
   let avatar = updatedUser.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)

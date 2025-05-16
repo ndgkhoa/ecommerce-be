@@ -13,7 +13,7 @@ export const signAccessToken = (payload: JwtPayload) => {
       iss: config.JWT_ISSUER,
       aud: config.JWT_AUDIENCE,
       iat: now,
-      exp: now + Number(config.JWT_ACCESS_EXP)
+      exp: now + config.JWT_ACCESS_EXP
     },
     config.privateKey,
     { algorithm: 'RS256' }
@@ -27,7 +27,7 @@ export const signRefreshToken = (userId: string) => {
       sub: userId,
       jti: crypto.randomUUID(),
       iat: now,
-      exp: now + Number(config.JWT_REFRESH_EXP),
+      exp: now + config.JWT_REFRESH_EXP,
       refresh: true
     },
     config.JWT_REFRESH_SECRET,

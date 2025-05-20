@@ -17,7 +17,10 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const getUserList = async (req: Request, res: Response) => {
-  const users = await userService.getUserList()
+  const pageSize = parseInt(req.query.pageSize as string) || 10
+  const pageIndex = parseInt(req.query.pageIndex as string) || 1
+  const keyword = req.query.keyword as string
+  const users = await userService.getUserList(pageSize, pageIndex, keyword)
   sendResponse(res, HttpStatusCode.OK, users, Message.SUCCESS)
 }
 

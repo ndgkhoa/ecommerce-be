@@ -37,8 +37,15 @@ export const createUser = async (body: CreateUserBody, avatarFile?: Express.Mult
 //   return await User.paginate(filter, options)
 // }
 
-export const getUserList = async () => {
-  return await User.find()
+export const getUserList = async (pageSize: number, pageIndex: number, keyword?: string) => {
+  const filter: Record<string, unknown> = {}
+  if (keyword) {
+    filter.FullName = { $regex: keyword, $options: 'i' }
+  }
+  return await User.find(filter)
+    .skip((pageIndex - 1) * pageSize)
+    .limit(pageSize)
+    .exec()
 }
 
 export const getUserById = async (id: string) => {

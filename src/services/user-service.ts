@@ -13,6 +13,13 @@ export const checkUniqueByEmail = async (email: string) => {
   }
 }
 
+export const checkUniqueByUserName = async (userName: string) => {
+  const user = await User.findOne({ UserName: userName })
+  if (user) {
+    throw new ApiError(HttpStatusCode.CONFLICT, Message.CONFLICT)
+  }
+}
+
 export const checkPassword = async (password: string, hash: string) => {
   const isMatch = await bcrypt.compare(password, hash)
   if (!isMatch) {
@@ -21,21 +28,17 @@ export const checkPassword = async (password: string, hash: string) => {
 }
 
 export const createUser = async (body: CreateUserBody, avatarFile?: Express.Multer.File) => {
-  const hash = await bcrypt.hash(body.Password, 10)
+  // const hash = await bcrypt.hash(body.Password, 10)
   let avatar = null
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
   return new User({
     ...body,
-    Password: hash,
+    // Password: hash,
     Avatar: avatar
   })
 }
-
-// export const queryUser = async (filter: any, options: any) => {
-//   return await User.paginate(filter, options)
-// }
 
 export const getUserList = async (pageSize: number, pageIndex: number, keyword?: string) => {
   const filter: Record<string, unknown> = {}
@@ -64,14 +67,21 @@ export const getUserByEmail = async (email: string) => {
   return user
 }
 
+export const getUserByUserName = async (userName: string) => {
+  const user = await User.findOne({ UserName: userName }).select('+Password')
+  if (!user) {
+    throw new ApiError(HttpStatusCode.NOT_FOUND, Message.NOT_FOUND)
+  }
+  return user
+}
+
 export const updateUserById = async (id: string, body: UpdateUserBody, avatarFile?: Express.Multer.File) => {
   const updatedUser = await getUserById(id)
-  const hash = await bcrypt.hash(body.Password, 10)
   let avatar = updatedUser.Avatar
   if (avatarFile) {
     avatar = await uploadImage(avatarFile)
   }
-  return await User.findByIdAndUpdate(id, { ...body, Password: hash, Avatar: avatar }, { new: true })
+  return await User.findByIdAndUpdate(id, { ...body, Avatar: avatar }, { new: true })
 }
 
 export const deleteUserById = async (id: string) => {

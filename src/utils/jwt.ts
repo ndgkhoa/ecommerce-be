@@ -1,19 +1,26 @@
 import jwt from 'jsonwebtoken'
+import ms, { StringValue } from 'ms'
 
 import config from '~/config/env'
 import { HttpStatusCode, Message } from '~/constants'
 import { ApiError, JwtPayload } from '~/types'
 
+const getCurrentTimestamp = () => Math.floor(Date.now() / 1000)
+
+const getExpirationTime = (expiration: string) => {
+  const now = getCurrentTimestamp()
+  return now + Math.floor(ms(expiration as StringValue) / 1000)
+}
+
 export const signAccessToken = (payload: JwtPayload) => {
-  const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       ...payload,
       jti: crypto.randomUUID(),
       iss: config.JWT_ISSUER,
       aud: config.JWT_AUDIENCE,
-      iat: now,
-      exp: now + config.JWT_ACCESS_EXP
+      iat: getCurrentTimestamp(),
+      exp: getExpirationTime(config.JWT_ACCESS_EXP)
     },
     config.privateKey,
     { algorithm: 'RS256' }
@@ -21,13 +28,12 @@ export const signAccessToken = (payload: JwtPayload) => {
 }
 
 export const signRefreshToken = (userId: string) => {
-  const now = Math.floor(Date.now() / 1000)
   return jwt.sign(
     {
       sub: userId,
       jti: crypto.randomUUID(),
-      iat: now,
-      exp: now + config.JWT_REFRESH_EXP,
+      iat: getCurrentTimestamp(),
+      exp: getExpirationTime(config.JWT_REFRESH_EXP),
       refresh: true
     },
     config.JWT_REFRESH_SECRET,

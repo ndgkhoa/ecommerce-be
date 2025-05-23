@@ -7,8 +7,8 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/j
 import { HttpStatusCode, Message } from '~/constants'
 
 export const login = async (req: Request, res: Response) => {
-  const user = await userService.getUserByEmail(req.body.Email)
-  await userService.checkPassword(req.body.Password, user.Password)
+  const user = await userService.getUserByUserName(req.body.UserName)
+  // await userService.checkPassword(req.body.Password, user.Password)
   const payload = { sub: user.id }
   const accessToken = signAccessToken(payload)
   const refreshToken = signRefreshToken(user.id)
@@ -30,7 +30,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const createUser = async (req: Request, res: Response) => {
-  await userService.checkUniqueByEmail(req.body.Email)
+  await userService.checkUniqueByUserName(req.body.UserName)
   const newUser = await userService.createUser(req.body, req.file)
   await newUser.save()
   sendResponse(res, HttpStatusCode.CREATED, newUser, Message.CREATED)

@@ -45,10 +45,17 @@ export const getUserList = async (pageSize: number, pageIndex: number, keyword?:
   if (keyword) {
     filter.FullName = { $regex: keyword, $options: 'i' }
   }
-  return await User.find(filter)
-    .skip((pageIndex - 1) * pageSize)
-    .limit(pageSize)
-    .exec()
+  const [users, total] = await Promise.all([
+    User.find(filter)
+      .skip((pageIndex - 1) * pageSize)
+      .limit(pageSize)
+      .exec(),
+    User.countDocuments(filter)
+  ])
+  return {
+    users,
+    total
+  }
 }
 
 export const getUserById = async (id: string) => {

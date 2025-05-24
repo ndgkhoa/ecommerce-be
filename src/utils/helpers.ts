@@ -2,11 +2,17 @@ import { Request, Response, NextFunction, RequestHandler } from 'express'
 
 import { ApiResponse } from '~/types'
 
-export const sendResponse = <T>(res: Response, statusCode: number, data: T | null, message: string) => {
+export const sendResponse = <T>(
+  res: Response,
+  statusCode: number,
+  data: T | null,
+  message: string,
+  totalRecord?: number
+) => {
   const response: ApiResponse<T> = {
     StatusCode: statusCode,
     Message: message,
-    TotalRecord: Array.isArray(data) ? data.length : data !== null ? 1 : 0,
+    TotalRecord: totalRecord || 1,
     Data: data
   }
   res.status(statusCode).json(response)

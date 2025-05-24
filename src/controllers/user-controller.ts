@@ -20,8 +20,8 @@ export const getUserList = async (req: Request, res: Response) => {
   const pageSize = parseInt(req.query.pageSize as string) || 10
   const pageIndex = parseInt(req.query.pageIndex as string) || 1
   const keyword = req.query.keyword as string
-  const users = await userService.getUserList(pageSize, pageIndex, keyword)
-  sendResponse(res, HttpStatusCode.OK, users, Message.SUCCESS)
+  const { users, total } = await userService.getUserList(pageSize, pageIndex, keyword)
+  sendResponse(res, HttpStatusCode.OK, users, Message.SUCCESS, total)
 }
 
 export const getUserById = async (req: Request, res: Response) => {

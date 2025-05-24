@@ -1,6 +1,6 @@
 import cloudinary from '~/config/cloudinary'
 
-export const uploadImage = async (file: Express.Multer.File) => {
+export const uploadImage = async (file: Express.Multer.File): Promise<string> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
@@ -11,13 +11,9 @@ export const uploadImage = async (file: Express.Multer.File) => {
         },
         (error, result) => {
           if (error || !result) {
-            return reject(error || new Error('Upload failed.'))
+            return reject(error)
           }
-          resolve({
-            uid: result.public_id,
-            name: file.originalname,
-            url: result.secure_url
-          })
+          resolve(result.secure_url)
         }
       )
       .end(file.buffer)

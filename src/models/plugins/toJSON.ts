@@ -20,7 +20,7 @@ export const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
       return {
         Id: _id,
         ...rest,
-        CreatedAt: createdAt
+        CreatedDate: createdAt
       }
     }
   })

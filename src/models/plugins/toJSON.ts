@@ -9,8 +9,7 @@ export const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
     virtuals: false,
     versionKey: false,
     transform: (doc, ret) => {
-      const { _id, ...rest } = ret
-      delete rest.createdAt
+      const { _id, createdAt, ...rest } = ret
       delete rest.updatedAt
       delete rest.__v
       if (options.hiddenFields && Array.isArray(options.hiddenFields)) {
@@ -20,7 +19,8 @@ export const toJSON = (schema: Schema, options: ToJSONOptions = {}) => {
       }
       return {
         Id: _id,
-        ...rest
+        ...rest,
+        CreatedAt: createdAt
       }
     }
   })

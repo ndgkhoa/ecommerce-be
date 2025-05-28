@@ -43,7 +43,8 @@ export const createUser = async (body: CreateUserBody, avatarFile?: Express.Mult
 export const getUserList = async (pageSize: number, pageIndex: number, keyword?: string) => {
   const filter: Record<string, unknown> = {}
   if (keyword) {
-    filter.FullName = { $regex: keyword, $options: 'i' }
+    const regex = { $regex: keyword, $options: 'i' }
+    filter.$or = [{ FullName: regex }, { UserName: regex }, { Email: regex }]
   }
   const [users, total] = await Promise.all([
     User.find(filter)

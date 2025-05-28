@@ -5,8 +5,11 @@ import { sendResponse } from '~/utils/helpers'
 import { HttpStatusCode, Message } from '~/constants'
 
 export const getRoleList = async (req: Request, res: Response) => {
-  const roles = await roleService.getRoleList()
-  sendResponse(res, HttpStatusCode.OK, roles, Message.SUCCESS)
+  const pageSize = parseInt(req.query.pageSize as string) || 10
+  const pageIndex = parseInt(req.query.pageIndex as string) || 1
+  const keyword = req.query.keyword as string
+  const { roles, total } = await roleService.getRoleList(pageSize, pageIndex, keyword)
+  sendResponse(res, HttpStatusCode.OK, roles, Message.SUCCESS, total)
 }
 
 export const getRoleById = async (req: Request, res: Response) => {

@@ -21,8 +21,23 @@ export const createPermission = async (body: CreatePermissionBody) => {
   return new Permission(body)
 }
 
-export const getPermissionList = async () => {
-  return await Permission.find()
+export const getPermissionList = async (pageSize: number, pageIndex: number, keyword?: string) => {
+  const filter: Record<string, unknown> = {}
+  if (keyword) {
+    const regex = { $regex: keyword, $options: 'i' }
+    filter.$or = [{ PermissionCode: regex }, { PermissionName: regex }]
+  }
+  const [permissions, total] = await Promise.all([
+    Permission.find(filter)
+      .skip((pageIndex - 1) * pageSize)
+      .limit(pageSize)
+      .exec(),
+    Permission.countDocuments(filter)
+  ])
+  return {
+    permissions,
+    total
+  }
 }
 
 export const getPermissionById = async (id: string) => {

@@ -14,8 +14,23 @@ export const createRole = async (body: CreateRoleBody) => {
   return new Role(body)
 }
 
-export const getRoleList = async () => {
-  return await Role.find()
+export const getRoleList = async (pageSize: number, pageIndex: number, keyword?: string) => {
+  const filter: Record<string, unknown> = {}
+  if (keyword) {
+    const regex = { $regex: keyword, $options: 'i' }
+    filter.$or = [{ RoleName: regex }]
+  }
+  const [roles, total] = await Promise.all([
+    Role.find(filter)
+      .skip((pageIndex - 1) * pageSize)
+      .limit(pageSize)
+      .exec(),
+    Role.countDocuments(filter)
+  ])
+  return {
+    roles,
+    total
+  }
 }
 
 export const getRoleById = async (id: string) => {

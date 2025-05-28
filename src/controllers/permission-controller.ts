@@ -5,8 +5,11 @@ import { sendResponse } from '~/utils/helpers'
 import { HttpStatusCode, Message } from '~/constants'
 
 export const getPermissionList = async (req: Request, res: Response) => {
-  const permissions = await permissionService.getPermissionList()
-  sendResponse(res, HttpStatusCode.OK, permissions, Message.SUCCESS)
+  const pageSize = parseInt(req.query.pageSize as string) || 10
+  const pageIndex = parseInt(req.query.pageIndex as string) || 1
+  const keyword = req.query.keyword as string
+  const { permissions, total } = await permissionService.getPermissionList(pageSize, pageIndex, keyword)
+  sendResponse(res, HttpStatusCode.OK, permissions, Message.SUCCESS, total)
 }
 
 export const getPermissionById = async (req: Request, res: Response) => {
